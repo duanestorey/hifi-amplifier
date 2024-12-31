@@ -10,7 +10,8 @@ public:
 
     enum MessageType {
         MSG_NONE = 0,
-        MSG_TIMER = 1
+        MSG_TIMER = 1,
+        MSG_I2C = 2
     };
 
     Message( MessageType t ) : mMessageType( t ), mParam( 0 ) {}

@@ -7,7 +7,7 @@
 
 static IRAM_ATTR bool i2c_slave_rx_done_callback(i2c_slave_dev_handle_t channel, const i2c_slave_rx_done_event_data_t *edata, void *userData )
 {
-    ((I2CBUS *)userData)->handleReceiveData();
+    ((I2CBUS *)userData)->handleReceiveData( edata ); 
     return true;
 }
 
@@ -28,6 +28,7 @@ I2CBUS::I2CBUS( uint8_t slaveAddr, Queue queue ) : mQueue( queue ), mSlaveAddr( 
     i2c_slave_event_callbacks_t cbs = {
         .on_recv_done = i2c_slave_rx_done_callback,
     };
+
     ESP_ERROR_CHECK( i2c_slave_register_event_callbacks( mBusHandle, &cbs, this ) );
 }
 
@@ -37,7 +38,9 @@ I2CBUS::startReceive() {
 }
 
 void 
-I2CBUS::handleReceiveData() {
+I2CBUS::handleReceiveData( const i2c_slave_rx_done_event_data_t *data ) {
+    mRecvBufferData = *data;
 
+    mQueue.addFromISR( Message::MSG_I2C );
 }
 
