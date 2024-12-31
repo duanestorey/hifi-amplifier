@@ -1,0 +1,110 @@
+
+(rules PCB freerouting.dsn
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 1)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 4.8)
+    )
+    (layer_rule In1.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.1)
+    )
+    (layer_rule In2.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 4.0)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 3.9)
+    )
+  )
+  (rule
+    (width 200.0)
+    (clearance 200.0)
+    (clearance 100.0 (type smd_to_turn_gap))
+    (clearance 50.0 (type smd))
+    (clearance 200.0 (type "kicad_default"))
+  )
+  (padstack "Via[0-3]_400:300_um"
+    (shape
+      (circle F.Cu 400.0 0.0 0.0)
+    )
+    (shape
+      (circle In1.Cu 400.0 0.0 0.0)
+    )
+    (shape
+      (circle In2.Cu 400.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 400.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-3]_400:300_um" "Via[0-3]_400:300_um" default
+  )
+  (via 
+    "Via[0-3]_400:300_um-kicad_default" "Via[0-3]_400:300_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-3]_400:300_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-3]_400:300_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu In1.Cu In2.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    GND AGND 3V3 5V "Net-(D1-A)" "Net-(D2-A)" SDA SCL
+    "I2S_IN_LRCLK" "I2S_IN_DATA" "I2S_IN_BCLK" "I2S_OUT_1_DATA" "I2S_OUT_4_DATA" "I2S_OUT_2_DATA" "I2S_OUT_3_DATA" SWDIO
+    SWCLK "OSC_IN" "UART1_TX" "OSC_OUT" SWO "UART1_RX" "I2S_IN_MCLK" "I2S_OUT_MCLK"
+    3V3A "PROCESS_RIGHT" "PROCESS_LEFT" "PROCESS_SW" "Net-(D3-A)" "Net-(D4-A)" "Net-(D5-A)" "Net-(D6-A)"
+    "PROCESS_FOUR" "Net-(U1-GND)" "I2S_OUT_LRCLK1" "I2S_OUT_BCLK1" "I2S_OUT_MCLK1" "CLOCKS_EN" "Net-(D7-A)" "Net-(D8-A)"
+    "DSP_ACTIVE" "I2S_OUT_BCLK2" "I2S_OUT_MCLK2" "I2S_OUT_LRCLK2" "I2S_OUT_MCLK3" "I2S_OUT_LRCLK3" "I2S_OUT_BCLK3" "I2S_OUT_BCLK4"
+    "I2S_OUT_MCLK4" "I2S_OUT_LRCLK4" "Net-(U2-OUT1)" "Net-(U4-OUT1)" "Net-(U2-OUT2)" "Net-(U4-OUT2)" "Net-(U4-OUT3)" "Net-(U2-OUT4)"
+    "Net-(U4-OUT4)" "Net-(U2-OUT3)" BOOT0 "DSP_NRST" "DSP_INT" "Net-(U5-VREF+)" "Net-(U3-OUT1)" "Net-(U3-OUT2)"
+    "Net-(U3-OUT3)" "Net-(U3-OUT4)" "Net-(U5-PC1)" "unconnected-(U5-PD14-Pad61)" "unconnected-(U5-PC5-Pad33)" "unconnected-(U5-PD9-Pad56)" "unconnected-(U5-PE2-Pad1)" "unconnected-(U5-PC11-Pad79)"
+    "unconnected-(U5-PA11-Pad70)" "unconnected-(U5-PC14-Pad8)" "unconnected-(U5-PE15-Pad45)" "unconnected-(U5-PD11-Pad58)" "unconnected-(U5-PA12-Pad71)" "unconnected-(U5-PE10-Pad40)" "unconnected-(U5-PC0-Pad15)" "unconnected-(U5-PC6-Pad63)"
+    "unconnected-(U5-PA2-Pad24)" "unconnected-(U5-PE11-Pad41)" "unconnected-(U5-PA3-Pad25)" "unconnected-(U5-PB9-Pad96)" "unconnected-(U5-PA1-Pad23)" "unconnected-(U5-PE9-Pad39)" "unconnected-(U5-PD12-Pad59)" "unconnected-(U5-PE12-Pad42)"
+    "unconnected-(U5-PE0-Pad97)" "unconnected-(U5-PB13-Pad52)" "unconnected-(U5-PD15-Pad62)" "unconnected-(U5-PA10-Pad69)" "unconnected-(U5-PE14-Pad44)" "unconnected-(U5-PC10-Pad78)" "unconnected-(U5-PB0-Pad34)" "unconnected-(U5-PC8-Pad65)"
+    "unconnected-(U5-PC12-Pad80)" "unconnected-(U5-PB8-Pad95)" "unconnected-(U5-PB1-Pad35)" "unconnected-(U5-PD13-Pad60)" "unconnected-(U5-PC13-Pad7)" "unconnected-(U5-PE1-Pad98)" "unconnected-(U5-PD10-Pad57)" "unconnected-(U5-PE8-Pad38)"
+    "unconnected-(U5-PE7-Pad37)" "unconnected-(U5-PE13-Pad43)" "unconnected-(U5-PC7-Pad64)" "unconnected-(U5-PA8-Pad67)" "unconnected-(U5-PC4-Pad32)" "unconnected-(U5-PB11-Pad47)" "SPI_MOSI" "Net-(U5-PE3)"
+    "Net-(U5-PE6)" "Net-(U5-PA7)" ADC DAC "SPI_MISO" "unconnected-(U5-PB2-Pad36)" "unconnected-(U5-PB10-Pad46)" "unconnected-(U5-PA0-Pad22)"
+    "Net-(C12-Pad1)" "Net-(C15-Pad1)" "unconnected-(U5-PA9-Pad68)" EXT1 EXT3 EXT4 EXT2 "unconnected-(U5-PD8-Pad55)"
+    (clearance_class "kicad_default")
+    (via_rule "kicad_default")
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu In1.Cu In2.Cu B.Cu)
+    )
+  )
+)
