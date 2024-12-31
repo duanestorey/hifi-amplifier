@@ -1,7 +1,6 @@
 #include "dsp.h"
 #include "debug.h"
 
-
 DSP::DSP() {
 
 }
@@ -27,7 +26,7 @@ DSP::start() {
     xTaskCreate(
         startAudioThread,
         "Audio Thread",
-        10000,
+        1000,
         (void *)this,
         2,
         NULL
@@ -36,7 +35,7 @@ DSP::start() {
     xTaskCreate(
         startGeneralThread,
         "General Thread",
-        10000,
+        1000,
         (void *)this,
         1,
         NULL

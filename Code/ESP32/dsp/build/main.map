@@ -25158,7 +25158,7 @@ LOAD /Users/duane/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp
                                  0x14 (size before relaxing)
  .literal._ZN3DSP5startEv
                 0x420009dc       0x10 esp-idf/main/libmain.a(dsp.cpp.obj)
-                                 0x20 (size before relaxing)
+                                 0x1c (size before relaxing)
  .literal._ZN3DSP17handleAudioThreadEv
                 0x420009ec        0x8 esp-idf/main/libmain.a(dsp.cpp.obj)
                                  0x14 (size before relaxing)
