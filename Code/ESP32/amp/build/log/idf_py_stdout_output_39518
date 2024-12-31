@@ -1,0 +1,24 @@
+[1/12] cd /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/esp-idf/main && /Users/duane/.espressif/python_env/idf5.3_py3.9_env/bin/python /Users/duane/Code/Github/esp-idf/components/spiffs/spiffsgen.py 0x19000 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/html /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/files.bin --page-size=256 --obj-name-len=32 --meta-len=4 --use-magic --use-magic-len
+[2/12] Performing build step for 'bootloader'
+[1/1] cd /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/bootloader/esp-idf/esptool_py && /Users/duane/.espressif/python_env/idf5.3_py3.9_env/bin/python /Users/duane/Code/Github/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6880 bytes. 0x780 bytes (7%) free.
+[3/12] No install step for 'bootloader'
+[4/12] Completed 'bootloader'
+[5/12] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/cs8416.cpp.obj
+[6/12] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/main.cpp.obj
+[7/12] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/amplifier.cpp.obj
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/main/amplifier.cpp: In member function 'void Amplifier::doActualRemoteReceive()':
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/main/amplifier.cpp:370:5: warning: missing initializer for member 'rmt_receive_config_t::flags' [-Wmissing-field-initializers]
+  370 |     };
+      |     ^
+[8/12] Linking C static library esp-idf/main/libmain.a
+[9/12] Generating ld/sections.ld
+[10/12] Linking CXX executable hifi-amp.elf
+[11/12] Generating binary image from built executable
+esptool.py v4.8.1
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/hifi-amp.bin
+[12/12] cd /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/esp-idf/esptool_py && /Users/duane/.espressif/python_env/idf5.3_py3.9_env/bin/python /Users/duane/Code/Github/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/partition_table/partition-table.bin /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/hifi-amp.bin
+hifi-amp.bin binary size 0xd9420 bytes. Smallest app partition is 0x400000 bytes. 0x326be0 bytes (79%) free.

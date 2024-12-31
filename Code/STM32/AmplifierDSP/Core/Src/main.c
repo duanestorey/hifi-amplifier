@@ -713,10 +713,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(DSP_CLOCKS_EN_GPIO_Port, DSP_CLOCKS_EN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DSP_ACTIVE_GPIO_Port, DSP_ACTIVE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, DSP_LEFT_Pin|DSP_RIGHT_Pin|DSP_SW_Pin|DSP_ALT_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : DSP_CLOCKS_EN_Pin */
+  GPIO_InitStruct.Pin = DSP_CLOCKS_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(DSP_CLOCKS_EN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : DSP_ACTIVE_Pin */
   GPIO_InitStruct.Pin = DSP_ACTIVE_Pin;

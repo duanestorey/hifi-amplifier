@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DSP_CLOCKS_EN_Pin GPIO_PIN_15
+#define DSP_CLOCKS_EN_GPIO_Port GPIOC
 #define DSP_ACTIVE_Pin GPIO_PIN_12
 #define DSP_ACTIVE_GPIO_Port GPIOB
 #define DSP_LEFT_Pin GPIO_PIN_1

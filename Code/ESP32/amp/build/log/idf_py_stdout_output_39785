@@ -1,0 +1,19 @@
+[0/1] cd /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build && /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -D "IDF_SIZE_TOOL=/Users/duane/.espressif/python_env/idf5.3_py3.9_env/bin/python;-m;esp_idf_size" -D MAP_FILE=/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/build/hifi-amp.map -D OUTPUT_JSON= -P /Users/duane/Code/Github/esp-idf/tools/cmake/run_size_tool.cmake
+                             Memory Type Usage Summary                              
+┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Memory Type/Section   ┃ Used [bytes] ┃ Used [%] ┃ Remain [bytes] ┃ Total [bytes] ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ Flash Code            │       655770 │    19.62 │        2686534 │       3342304 │
+│    .text              │       655770 │    19.62 │                │               │
+│ Flash Data            │       153896 │     3.67 │        4040376 │       4194272 │
+│    .rodata            │       153640 │     3.66 │                │               │
+│    .appdesc           │          256 │     0.01 │                │               │
+│ IRAM                  │        63211 │    48.23 │          67861 │        131072 │
+│    .text              │        62183 │    47.44 │                │               │
+│    .vectors           │         1027 │     0.78 │                │               │
+│ DRAM                  │        37288 │    20.63 │         143448 │        180736 │
+│    .bss               │        20384 │    11.28 │                │               │
+│    .data              │        16904 │     9.35 │                │               │
+│ RTC SLOW              │           24 │     0.29 │           8168 │          8192 │
+│    .rtc_slow_reserved │           24 │     0.29 │                │               │
+└───────────────────────┴──────────────┴──────────┴────────────────┴───────────────┘
