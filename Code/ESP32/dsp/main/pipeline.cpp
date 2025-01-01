@@ -120,20 +120,24 @@ Pipeline::convertFloatToInt16( float f ) {
 }
 
 int16_t *
-Pipeline::process( int16_t *data ) {
+Pipeline::process( int16_t *data, uint32_t samples ) {
+    if ( samples == 0 ) {
+        samples = mSamples;
+    }
+
     checkAllocateFloat();
     checkAllocateSigned16();
 
     // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mInputLeft[ i ] = (float)data[ i*2 ];
         mInputRight[ i ] = (float)data[ i*2 + 1 ];
     }
 
-    process();
+    process( samples );
 
     // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mOutput16s[ i*2 ] = convertFloatToInt16( mOutputLeft[ i ] );
         mOutput16s[ i*2 + 1 ] = convertFloatToInt16( mOutputRight[ i ] );
     }
@@ -142,19 +146,23 @@ Pipeline::process( int16_t *data ) {
 }
 
 float * 
-Pipeline::process( float *data ) {
+Pipeline::process( float *data, uint32_t samples ) {
+    if ( samples == 0 ) {
+        samples = mSamples;
+    }
+
     checkAllocateFloat();
 
     // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mInputLeft[ i ] = data[ i*2 ];
         mInputRight[ i ] = data[ i*2 + 1 ];
     }
 
-    process();
+    process( samples );
 
     // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mOutputFloat[ i*2 ] = mOutputLeft[ i ];
         mOutputFloat[ i*2 + 1 ] = mOutputRight[ i ];
     }
@@ -163,20 +171,24 @@ Pipeline::process( float *data ) {
 }
 
 int32_t * 
-Pipeline::process( int32_t *data ) {
+Pipeline::process( int32_t *data, uint32_t samples ) {
+    if ( samples == 0 ) {
+        samples = mSamples;
+    }
+
     checkAllocateFloat();
     checkAllocateSigned32();
 
     // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mInputLeft[ i ] = (float)data[ i*2 ];
         mInputRight[ i ] = (float)data[ i*2 + 1 ];
     }
 
-    process();
+    process( samples );
 
     // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < mSamples; i++ ) {
+    for ( uint32_t i = 0; i < samples; i++ ) {
         mOutput32s[ i*2 ] = convertFloatToInt32( mOutputLeft[ i ] );
         mOutput32s[ i*2 + 1 ] = convertFloatToInt32( mOutputRight[ i ] );
     }
@@ -185,29 +197,29 @@ Pipeline::process( int32_t *data ) {
 }
 
 void 
-Pipeline::process() {
+Pipeline::process( uint32_t samples ) {
     for( Biquads::iterator i = mBiquads[ 0 ].begin(); i != mBiquads[ 0 ].end(); i++ ) {
-        dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, mSamples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
 
         if ( i != mBiquads[ 0 ].end() ) {
-            memcpy( mInputLeft, mOutputLeft, sizeof( float ) * mSamples );
+            memcpy( mInputLeft, mOutputLeft, sizeof( float ) * samples );
         }
     }
 
     for( Biquads::iterator i = mBiquads[ 1 ].begin(); i != mBiquads[ 1 ].end(); i++ ) {
-        dsps_biquad_f32_aes3( mInputRight, mOutputRight, mSamples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        dsps_biquad_f32_aes3( mInputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
 
         if ( i != mBiquads[ 1 ].end() ) {
-            memcpy( mInputRight, mOutputRight, sizeof( float ) * mSamples );
+            memcpy( mInputRight, mOutputRight, sizeof( float ) * samples );
         }
     }
 
     if ( mHasAttenuation ) {
-        memcpy( mInputLeft, mOutputLeft, sizeof( float ) * mSamples );  
-        memcpy( mInputRight, mOutputRight, sizeof( float ) * mSamples );
+        memcpy( mInputLeft, mOutputLeft, sizeof( float ) * samples );  
+        memcpy( mInputRight, mOutputRight, sizeof( float ) * samples );
 
-        dsps_mulc_f32_ae32( mInputLeft, mOutputLeft, mSamples, mGainFactor[ 0 ], 1, 1 );
-        dsps_mulc_f32_ae32( mInputRight, mOutputRight, mSamples, mGainFactor[ 1 ], 1, 1 );
+        dsps_mulc_f32_ae32( mInputLeft, mOutputLeft, samples, mGainFactor[ 0 ], 1, 1 );
+        dsps_mulc_f32_ae32( mInputRight, mOutputRight, samples, mGainFactor[ 1 ], 1, 1 );
     }
 }
 

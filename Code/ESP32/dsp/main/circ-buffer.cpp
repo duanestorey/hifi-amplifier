@@ -17,7 +17,7 @@ Circ_Buffer::~Circ_Buffer() {
 }
 
 bool
-Circ_Buffer::read( uint32_t readSize, uint8_t *&sourcePtr1, uint32_t &dataSize1, uint8_t *&sourcePtr2, uint32_t &dataSize2 ) {
+Circ_Buffer::read( uint32_t readSize, uint8_t *&sourcePtr1, size_t &dataSize1, uint8_t *&sourcePtr2, size_t &dataSize2 ) {
     if ( readSize <= dataReady() ) {
         if ( ( mReadPtr + readSize ) < mEndPointer ) {
             sourcePtr1 = mReadPtr;
@@ -45,7 +45,7 @@ Circ_Buffer::read( uint32_t readSize, uint8_t *&sourcePtr1, uint32_t &dataSize1,
 }
 
 bool
-Circ_Buffer::write( const uint8_t *source, uint32_t dataToWrite ) {     
+Circ_Buffer::write( const uint8_t *source, size_t dataToWrite ) {     
     if ( dataToWrite <= writeSpaceAvail() ) {
         if ( ( mWritePtr + dataToWrite ) < mEndPointer ) {
             // can do it in one write

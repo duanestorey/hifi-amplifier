@@ -14,9 +14,9 @@ class Pipeline {
         void addBiquadLeft( Biquad *biquad );
         void addBiquadRight( Biquad *biquad );
         void resetDelayLines();
-        float *process( float *data );
-        int16_t *process( int16_t *data );
-        int32_t *process( int32_t *data );
+        float *process( float *data, uint32_t samples = 0 );
+        int16_t *process( int16_t *data, uint32_t samples = 0 );
+        int32_t *process( int32_t *data, uint32_t samples = 0 );
 
         void setAttenuation( float leftLevel, float rightLevel );
         void resetAll();
@@ -40,7 +40,7 @@ class Pipeline {
         float mGainFactor[ 2 ];
         bool mHasAttenuation;
     private:
-        void process();
+        void process( uint32_t samples );
 
         void checkAllocateFloat();
         void checkAllocateSigned32();

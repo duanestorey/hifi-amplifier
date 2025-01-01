@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "main",
-    "project_version":    "0dcd3f41-dirty",
+    "project_version":    "a332d834-dirty",
     "project_path":       "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp",
     "idf_path":           "/Users/duane/Code/Github/esp-idf",
     "build_dir":          "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build",

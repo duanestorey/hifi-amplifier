@@ -2,7 +2,7 @@
 #include "config.h"
 #include <memory.h>
 
-I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), mBytesWaiting( 0 ), mTxHandle( 0 ), mRxHandle( 0 ), 
+I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mPreloadedAmount( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), mTxHandle( 0 ), mRxHandle( 0 ), 
     mTransmitStarted( false ), mBuffer( 0 ) {
     memset( &mConfig, 0, sizeof( mConfig ) );
 }
@@ -10,7 +10,7 @@ I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mBitDepth( 16 ), 
 void 
 I2S::handleReceiveCallback( i2s_event_data_t *event ) {
     if ( event->size ) {
-        mBytesWaiting += event->size;
+        mBuffer->write( (uint8_t *)event->dma_buf, event->size );
         mQueue.addFromISR( Message::MSG_I2S_RECV );
     }
 }
@@ -21,12 +21,16 @@ bool i2s_recv_callback(i2s_chan_handle_t handle, i2s_event_data_t *event, void *
     return true;
 }
 
-void 
-I2S::readData( uint8_t *data, size_t maxSize, size_t &dataSize ) {
-    if ( mRxHandle ) {
-        i2s_channel_read( mRxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
+bool 
+I2S::readData( uint32_t readSize, uint8_t *&dataPtr1, size_t &dataSize1, uint8_t *&dataPtr2, size_t &dataSize2  ) {
+    if ( mBuffer->dataReady() >= readSize ) {
+        mBuffer->read( readSize, dataPtr1, dataSize1, dataPtr2, dataSize2 );
+        return true;
     } else {
-        dataSize = 0;
+        dataPtr1 = dataPtr2 = 0;
+        dataSize1 = dataSize2 = 0;
+
+        return false;
     }  
 }
 
@@ -35,7 +39,14 @@ I2S::writeData( uint8_t *data, size_t maxSize, size_t &dataSize ) {
     if ( mTxHandle ) {
         if ( !mTransmitStarted ) {
             i2s_channel_preload_data( mTxHandle, data, maxSize, &dataSize );
-            i2s_channel_enable( mTxHandle );
+            mPreloadedAmount += dataSize;
+
+            uint32_t minPreloadSize = ( mSamplingRate * 2 * mSlotDepth * DSP_I2S_PRELOAD_SIZE_MS / 8000 )
+
+            if ( mPreloadedAmount >= minPreloadSize ) {
+                i2s_channel_enable( mTxHandle );
+                mTransmitStarted = true;
+            }
         } else {
             i2s_channel_write( mTxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
         }   

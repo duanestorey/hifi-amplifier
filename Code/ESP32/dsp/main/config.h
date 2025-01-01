@@ -10,6 +10,7 @@
 #define DSP_I2C_BASE_ADDR		0b1010000
 
 #define DSP_I2S_PACKET_SIZE_MS	10
+#define DSP_I2S_PRELOAD_SIZE_MS	20
 #define DSP_I2S_MAX_TIMEOUT		50
 
 #define DSP_PIN_SDA				(gpio_num_t)5

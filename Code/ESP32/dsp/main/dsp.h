@@ -60,6 +60,7 @@ class DSP : public I2C_Listener {
         void startAudio();
         void stopAudio();
         void processAudio();
+        void writeSplitData( uint8_t *bufferPtr1, uint32_t writeSize1, uint8_t *bufferPtr2, uint32_t writeSize2, uint8_t bytesPerSample );
 };
 
 #endif

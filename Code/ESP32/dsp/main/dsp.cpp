@@ -70,33 +70,56 @@ DSP::sizePerSample() {
     }
 }
 
+void 
+DSP::writeSplitData( uint8_t *bufferPtr1, uint32_t writeSize1, uint8_t *bufferPtr2, uint32_t writeSize2, uint8_t bytesPerSample ) {
+    size_t writtenSize1 = 0;
+    size_t writtenSize2 = 0;
+
+    uint8_t *processed = (uint8_t *)mPipeline->process( (int16_t*)bufferPtr1, writeSize1/bytesPerSample );
+    mI2S->writeData( processed, writeSize1, writtenSize1 );
+
+    if ( writeSize2 ) {
+        processed = (uint8_t *)mPipeline->process( (int16_t*)bufferPtr2, writeSize2/bytesPerSample );
+        mI2S->writeData( processed, writeSize2, writtenSize2 );
+    }
+}
+
 void
 DSP::processAudio() {
     while ( mI2S->bytesWaiting() >= mBytesPerPayload ) {
-        size_t receivedSize = 0;
-        size_t writtenSize = 0;
-        
-        mI2S->readData( mBuffer, mBytesPerPayload, receivedSize );
+        size_t receivedSize1 = 0;
+        size_t receivedSize2 = 0;
+        size_t writtenSize1 = 0;
+        size_t writtenSize2 = 0;
+        uint8_t *bufferPtr1 = 0;
+        uint8_t *bufferPtr2 = 0;
+
+        mI2S->readData( mBytesPerPayload, bufferPtr1, receivedSize1, bufferPtr2, receivedSize2 );
         if ( mMode == MODE_DSP ) {
-            if ( mBytesPerPayload == receivedSize ) {
-                uint8_t *processed = 0;
+            if ( mBytesPerPayload == ( receivedSize1 + receivedSize2 ) ) {
                 switch( mBitDepth ) {
                     case 16:    
-                        processed = (uint8_t *)mPipeline->process( (int16_t*)mBuffer );
-                        mI2S->writeData( processed, mBytesPerPayload, writtenSize );
+                        writeSplitData( bufferPtr1, receivedSize1, bufferPtr2, receivedSize2, 4 );
                         break;
-                    case 24:
+                    case 24:    
+                        writeSplitData( bufferPtr1, receivedSize1, bufferPtr2, receivedSize2, mSlotDepth/4 );
+                        break;
                     case 32:
-                        processed = (uint8_t *)mPipeline->process( (int32_t*)mBuffer );
-                        mI2S->writeData( processed, mBytesPerPayload, writtenSize );
+                        writeSplitData( bufferPtr1, receivedSize1, bufferPtr2, receivedSize2, 8 );
                         break;
                 }
             } else {
                 // ERROR
-                AMP_DEBUG_E( "Unexpected read size %d", receivedSize );
+                AMP_DEBUG_E( "Unexpected read size %d", receivedSize1 + receivedSize2 );
             }                  
         } else if ( mMode == MODE_BYPASS ) {
-            mI2S->writeData( mBuffer, mBytesPerPayload, writtenSize );
+            if ( receivedSize1 ) {
+                mI2S->writeData( bufferPtr1, receivedSize1, writtenSize1 );
+            }
+
+            if ( receivedSize2 ) {
+                mI2S->writeData( bufferPtr2, receivedSize2, writtenSize2 );
+            }
         }
     }
 }
