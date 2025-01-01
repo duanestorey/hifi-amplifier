@@ -1,5 +1,0 @@
-CMake Error at CMakeLists.txt:6:
-  Parse error.  Expected "(", got identifier with text "esp_driver_i2c".
-
-
-ninja: error: rebuilding 'build.ninja': subcommand failed

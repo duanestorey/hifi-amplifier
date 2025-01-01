@@ -1,7 +1,7 @@
 {
-    "version":            "1.1",
+    "version":            "1.2",
     "project_name":       "bootloader",
-    "project_version":    "v5.3.1-638-ga0f798cfc4",
+    "project_version":    "v5.5-dev-1050-gb5ac4fbdf9",
     "project_path":       "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject",
     "idf_path":           "/Users/duane/Code/Github/esp-idf",
     "build_dir":          "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader",
@@ -11,7 +11,7 @@
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
     "build_type":         "flash_app",
-    "git_revision":       "v5.3.1-638-ga0f798cfc4",
+    "git_revision":       "v5.5-dev-1050-gb5ac4fbdf9",
     "target":             "esp32s3",
     "rev":                "",
     "min_rev":            "0",
@@ -19,14 +19,14 @@
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
     "monitor_toolprefix": "xtensa-esp32s3-elf-",
-    "c_compiler":         "/Users/duane/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc",
+    "c_compiler":         "/Users/duane/.espressif/tools/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc",
     "config_environment" : {
-        "COMPONENT_KCONFIGS" : "/Users/duane/Code/Github/esp-idf/components/efuse/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_common/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_hw_support/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_system/Kconfig;/Users/duane/Code/Github/esp-idf/components/freertos/Kconfig;/Users/duane/Code/Github/esp-idf/components/hal/Kconfig;/Users/duane/Code/Github/esp-idf/components/log/Kconfig;/Users/duane/Code/Github/esp-idf/components/newlib/Kconfig;/Users/duane/Code/Github/esp-idf/components/soc/Kconfig;/Users/duane/Code/Github/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS" : "/Users/duane/Code/Github/esp-idf/components/efuse/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_common/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_hw_support/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_security/Kconfig;/Users/duane/Code/Github/esp-idf/components/esp_system/Kconfig;/Users/duane/Code/Github/esp-idf/components/freertos/Kconfig;/Users/duane/Code/Github/esp-idf/components/hal/Kconfig;/Users/duane/Code/Github/esp-idf/components/log/Kconfig;/Users/duane/Code/Github/esp-idf/components/newlib/Kconfig;/Users/duane/Code/Github/esp-idf/components/soc/Kconfig;/Users/duane/Code/Github/esp-idf/components/spi_flash/Kconfig",
         "COMPONENT_KCONFIGS_PROJBUILD" : "/Users/duane/Code/Github/esp-idf/components/bootloader/Kconfig.projbuild;/Users/duane/Code/Github/esp-idf/components/esp_app_format/Kconfig.projbuild;/Users/duane/Code/Github/esp-idf/components/esp_rom/Kconfig.projbuild;/Users/duane/Code/Github/esp-idf/components/esptool_py/Kconfig.projbuild;/Users/duane/Code/Github/esp-idf/components/partition_table/Kconfig.projbuild"
     },
     "common_component_reqs": [ "log", "esp_rom", "esp_common", "esp_hw_support", "newlib", "xtensa" ],
-    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp_app_format", "esp_bootloader_format", "esp_common", "esp_hw_support", "esp_rom", "esp_system", "esptool_py", "freertos", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "soc", "spi_flash", "xtensa", "" ],
-    "build_component_paths" : [ "/Users/duane/Code/Github/esp-idf/components/bootloader", "/Users/duane/Code/Github/esp-idf/components/bootloader_support", "/Users/duane/Code/Github/esp-idf/components/efuse", "/Users/duane/Code/Github/esp-idf/components/esp_app_format", "/Users/duane/Code/Github/esp-idf/components/esp_bootloader_format", "/Users/duane/Code/Github/esp-idf/components/esp_common", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support", "/Users/duane/Code/Github/esp-idf/components/esp_rom", "/Users/duane/Code/Github/esp-idf/components/esp_system", "/Users/duane/Code/Github/esp-idf/components/esptool_py", "/Users/duane/Code/Github/esp-idf/components/freertos", "/Users/duane/Code/Github/esp-idf/components/hal", "/Users/duane/Code/Github/esp-idf/components/log", "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject/main", "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject/components/micro-ecc", "/Users/duane/Code/Github/esp-idf/components/newlib", "/Users/duane/Code/Github/esp-idf/components/partition_table", "/Users/duane/Code/Github/esp-idf/components/soc", "/Users/duane/Code/Github/esp-idf/components/spi_flash", "/Users/duane/Code/Github/esp-idf/components/xtensa", "" ],
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp_app_format", "esp_bootloader_format", "esp_common", "esp_hw_support", "esp_rom", "esp_security", "esp_system", "esptool_py", "freertos", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "/Users/duane/Code/Github/esp-idf/components/bootloader", "/Users/duane/Code/Github/esp-idf/components/bootloader_support", "/Users/duane/Code/Github/esp-idf/components/efuse", "/Users/duane/Code/Github/esp-idf/components/esp_app_format", "/Users/duane/Code/Github/esp-idf/components/esp_bootloader_format", "/Users/duane/Code/Github/esp-idf/components/esp_common", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support", "/Users/duane/Code/Github/esp-idf/components/esp_rom", "/Users/duane/Code/Github/esp-idf/components/esp_security", "/Users/duane/Code/Github/esp-idf/components/esp_system", "/Users/duane/Code/Github/esp-idf/components/esptool_py", "/Users/duane/Code/Github/esp-idf/components/freertos", "/Users/duane/Code/Github/esp-idf/components/hal", "/Users/duane/Code/Github/esp-idf/components/log", "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject/main", "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject/components/micro-ecc", "/Users/duane/Code/Github/esp-idf/components/newlib", "/Users/duane/Code/Github/esp-idf/components/partition_table", "/Users/duane/Code/Github/esp-idf/components/soc", "/Users/duane/Code/Github/esp-idf/components/spi_flash", "/Users/duane/Code/Github/esp-idf/components/xtensa", "" ],
     "build_component_info" : {
         "bootloader": {
             "alias": "idf::bootloader",
@@ -126,12 +126,12 @@
             "type": "LIBRARY",
             "lib": "__idf_esp_hw_support",
             "reqs": [ "soc" ],
-            "priv_reqs": [ "efuse", "spi_flash", "bootloader_support", "esp_system" ],
+            "priv_reqs": [ "efuse", "spi_flash", "bootloader_support", "esp_security", "esp_system" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/libesp_hw_support.a",
-            "sources": [ "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/cpu.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/esp_cpu_intr.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/esp_memory_utils.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/cpu_region_protect.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_clk.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_clk_init.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_init.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_sleep.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_time.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/chip_info.c" ],
-            "include_dirs": [ "include", "include/soc", "include/soc/esp32s3", "dma/include", "ldo/include" ]
+            "sources": [ "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/cpu.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/esp_cpu_intr.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/esp_memory_utils.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/cpu_region_protect.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_clk.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_clk_init.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_init.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_sleep.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/rtc_time.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/port/esp32s3/chip_info.c", "/Users/duane/Code/Github/esp-idf/components/esp_hw_support/mspi_timing_tuning/port/esp32s3" ],
+            "include_dirs": [ "include", "include/soc", "include/soc/esp32s3", "dma/include", "ldo/include", "debug_probe/include", "mspi_timing_tuning/include" ]
         },
         "esp_rom": {
             "alias": "idf::esp_rom",
@@ -145,8 +145,23 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_rom/libesp_rom.a",
-            "sources": [ "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_crc.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_sys.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_uart.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_spiflash.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_efuse.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_longjmp.S", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_systimer.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_wdt.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_cache_esp32s2_esp32s3.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_cache_writeback_esp32s3.S" ],
-            "include_dirs": [ "include", "include/esp32s3", "esp32s3" ]
+            "sources": [ "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_sys.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_print.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_crc.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_uart.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_spiflash.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_efuse.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_gpio.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_longjmp.S", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_systimer.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_wdt.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_cache_esp32s2_esp32s3.c", "/Users/duane/Code/Github/esp-idf/components/esp_rom/patches/esp_rom_cache_writeback_esp32s3.S" ],
+            "include_dirs": [ "include", "esp32s3/include", "esp32s3/include/esp32s3", "esp32s3" ]
+        },
+        "esp_security": {
+            "alias": "idf::esp_security",
+            "target": "___idf_esp_security",
+            "prefix": "idf",
+            "dir": "/Users/duane/Code/Github/esp-idf/components/esp_security",
+            "type": "CONFIG_ONLY",
+            "lib": "__idf_esp_security",
+            "reqs": [],
+            "priv_reqs": [],
+            "managed_reqs": [],
+            "managed_priv_reqs": [],
+            "file": "",
+            "sources": [],
+            "include_dirs": [ "include" ]
         },
         "esp_system": {
             "alias": "idf::esp_system",
@@ -216,11 +231,11 @@
             "type": "LIBRARY",
             "lib": "__idf_log",
             "reqs": [],
-            "priv_reqs": [ "soc", "hal", "esp_hw_support" ],
+            "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/log/liblog.a",
-            "sources": [ "/Users/duane/Code/Github/esp-idf/components/log/log.c", "/Users/duane/Code/Github/esp-idf/components/log/log_buffers.c", "/Users/duane/Code/Github/esp-idf/components/log/log_noos.c" ],
+            "sources": [ "/Users/duane/Code/Github/esp-idf/components/log/src/noos/log_timestamp.c", "/Users/duane/Code/Github/esp-idf/components/log/src/log_timestamp_common.c", "/Users/duane/Code/Github/esp-idf/components/log/src/noos/log_lock.c" ],
             "include_dirs": [ "include" ]
         },
         "main": {
@@ -295,8 +310,8 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/soc/libsoc.a",
-            "sources": [ "/Users/duane/Code/Github/esp-idf/components/soc/lldesc.c", "/Users/duane/Code/Github/esp-idf/components/soc/dport_access_common.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/interrupts.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/gpio_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/uart_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/adc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/dedic_gpio_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/gdma_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/spi_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/ledc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/pcnt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/rmt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/sdm_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/i2s_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/i2c_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/temperature_sensor_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/timer_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/lcd_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/mcpwm_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/mpi_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/sdmmc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/touch_sensor_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/twai_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/wdt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/usb_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/usb_dwc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/rtc_io_periph.c" ],
-            "include_dirs": [ "include", "esp32s3", "esp32s3/include" ]
+            "sources": [ "/Users/duane/Code/Github/esp-idf/components/soc/lldesc.c", "/Users/duane/Code/Github/esp-idf/components/soc/dport_access_common.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/interrupts.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/gpio_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/uart_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/adc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/dedic_gpio_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/gdma_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/spi_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/ledc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/pcnt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/rmt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/sdm_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/i2s_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/i2c_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/temperature_sensor_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/timer_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/lcd_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/mcpwm_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/mpi_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/sdmmc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/touch_sensor_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/twai_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/wdt_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/usb_dwc_periph.c", "/Users/duane/Code/Github/esp-idf/components/soc/esp32s3/rtc_io_periph.c" ],
+            "include_dirs": [ "include", "esp32s3", "esp32s3/include", "esp32s3/register" ]
         },
         "spi_flash": {
             "alias": "idf::spi_flash",
@@ -469,7 +484,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_adc",
             "lib": "__idf_esp_adc",
             "reqs": [],
-            "priv_reqs": [ "driver", "esp_driver_gpio", "efuse", "esp_pm", "esp_ringbuf", "esp_mm" ],
+            "priv_reqs": [ "esp_driver_gpio", "efuse", "esp_pm", "esp_ringbuf", "esp_mm", "driver" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include", "interface", "esp32s3/include", "deprecated/include" ]
@@ -505,7 +520,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_coex",
             "lib": "__idf_esp_coex",
             "reqs": [],
-            "priv_reqs": [ "esp_timer", "driver", "esp_event" ],
+            "priv_reqs": [ "esp_timer", "esp_driver_gpio" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -913,10 +928,10 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_hw_support",
             "lib": "__idf_esp_hw_support",
             "reqs": [ "soc" ],
-            "priv_reqs": [ "efuse", "spi_flash", "bootloader_support", "esp_system" ],
+            "priv_reqs": [ "efuse", "spi_flash", "bootloader_support", "esp_security", "esp_system" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include", "include/soc", "include/soc/esp32s3", "dma/include", "ldo/include" ]
+            "include_dirs": [ "include", "include/soc", "include/soc/esp32s3", "dma/include", "ldo/include", "debug_probe/include", "mspi_timing_tuning/include" ]
         },
         "esp_lcd": {
             "alias": "idf::esp_lcd",
@@ -984,8 +999,8 @@
             "prefix": "idf",
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_partition",
             "lib": "__idf_esp_partition",
-            "reqs": [],
-            "priv_reqs": [ "esp_system", "bootloader_support", "spi_flash", "app_update", "partition_table" ],
+            "reqs": [ "spi_flash" ],
+            "priv_reqs": [ "bootloader_support" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -997,7 +1012,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_phy",
             "lib": "__idf_esp_phy",
             "reqs": [],
-            "priv_reqs": [ "nvs_flash", "driver", "efuse", "esp_timer", "esp_wifi" ],
+            "priv_reqs": [ "nvs_flash", "esp_driver_gpio", "efuse", "esp_timer", "esp_wifi" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include", "esp32s3/include" ]
@@ -1048,7 +1063,19 @@
             "priv_reqs": [ "soc", "hal" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include", "include/esp32s3", "esp32s3" ]
+            "include_dirs": [ "include", "esp32s3/include", "esp32s3/include/esp32s3", "esp32s3" ]
+        },
+        "esp_security": {
+            "alias": "idf::esp_security",
+            "target": "___idf_esp_security",
+            "prefix": "idf",
+            "dir": "/Users/duane/Code/Github/esp-idf/components/esp_security",
+            "lib": "__idf_esp_security",
+            "reqs": [],
+            "priv_reqs": [],
+            "managed_reqs": [],
+            "managed_priv_reqs": [],
+            "include_dirs": [ "include" ]
         },
         "esp_system": {
             "alias": "idf::esp_system",
@@ -1057,6 +1084,18 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_system",
             "lib": "__idf_esp_system",
             "reqs": [ "spi_flash" ],
+            "priv_reqs": [],
+            "managed_reqs": [],
+            "managed_priv_reqs": [],
+            "include_dirs": []
+        },
+        "esp_tee": {
+            "alias": "idf::esp_tee",
+            "target": "___idf_esp_tee",
+            "prefix": "idf",
+            "dir": "/Users/duane/Code/Github/esp-idf/components/esp_tee",
+            "lib": "__idf_esp_tee",
+            "reqs": [],
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
@@ -1093,10 +1132,10 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/esp_wifi",
             "lib": "__idf_esp_wifi",
             "reqs": [ "esp_event", "esp_phy", "esp_netif" ],
-            "priv_reqs": [ "driver", "esptool_py", "esp_pm", "esp_timer", "nvs_flash", "wpa_supplicant", "hal", "lwip", "esp_coex" ],
+            "priv_reqs": [ "esptool_py", "esp_pm", "esp_timer", "nvs_flash", "wpa_supplicant", "hal", "lwip", "esp_coex" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include", "wifi_apps/include", "wifi_apps/nan_app/include" ]
+            "include_dirs": [ "include", "include/local", "wifi_apps/include", "wifi_apps/nan_app/include" ]
         },
         "espcoredump": {
             "alias": "idf::espcoredump",
@@ -1105,7 +1144,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/espcoredump",
             "lib": "__idf_espcoredump",
             "reqs": [],
-            "priv_reqs": [ "esp_partition", "spi_flash", "bootloader_support", "mbedtls", "esp_rom", "soc", "esp_system", "esp_driver_gpio", "driver" ],
+            "priv_reqs": [ "esp_partition", "spi_flash", "bootloader_support", "mbedtls", "esp_rom", "soc", "esp_system", "esp_driver_gpio" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -1168,7 +1207,7 @@
             "priv_reqs": [ "soc" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include" ]
+            "include_dirs": [ "include", "tlsf" ]
         },
         "http_parser": {
             "alias": "idf::http_parser",
@@ -1201,7 +1240,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/ieee802154",
             "lib": "__idf_ieee802154",
             "reqs": [],
-            "priv_reqs": [ "esp_phy", "driver", "esp_timer", "esp_coex", "soc", "hal" ],
+            "priv_reqs": [ "esp_phy", "esp_timer", "esp_coex", "soc", "hal", "esp_pm" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -1237,7 +1276,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/log",
             "lib": "__idf_log",
             "reqs": [],
-            "priv_reqs": [ "soc", "hal", "esp_hw_support" ],
+            "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -1297,10 +1336,10 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/nvs_flash",
             "lib": "__idf_nvs_flash",
             "reqs": [ "esp_partition" ],
-            "priv_reqs": [ "spi_flash", "newlib" ],
+            "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include", "../spi_flash/include" ]
+            "include_dirs": [ "include" ]
         },
         "nvs_sec_provider": {
             "alias": "idf::nvs_sec_provider",
@@ -1369,7 +1408,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/protocomm",
             "lib": "__idf_protocomm",
             "reqs": [ "bt" ],
-            "priv_reqs": [ "protobuf-c", "mbedtls", "console", "esp_http_server", "driver" ],
+            "priv_reqs": [ "protobuf-c", "mbedtls", "console", "esp_http_server", "esp_driver_uart" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include/common", "include/security", "include/transports", "include/crypto/srp6a", "proto-c" ]
@@ -1398,6 +1437,18 @@
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
         },
+        "rt": {
+            "alias": "idf::rt",
+            "target": "___idf_rt",
+            "prefix": "idf",
+            "dir": "/Users/duane/Code/Github/esp-idf/components/rt",
+            "lib": "__idf_rt",
+            "reqs": [],
+            "priv_reqs": [],
+            "managed_reqs": [],
+            "managed_priv_reqs": [],
+            "include_dirs": [ "include" ]
+        },
         "sdmmc": {
             "alias": "idf::sdmmc",
             "target": "___idf_sdmmc",
@@ -1420,7 +1471,7 @@
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
-            "include_dirs": [ "include", "esp32s3", "esp32s3/include" ]
+            "include_dirs": [ "include", "esp32s3", "esp32s3/include", "esp32s3/register" ]
         },
         "spi_flash": {
             "alias": "idf::spi_flash",
@@ -1441,7 +1492,7 @@
             "dir": "/Users/duane/Code/Github/esp-idf/components/spiffs",
             "lib": "__idf_spiffs",
             "reqs": [ "esp_partition" ],
-            "priv_reqs": [ "bootloader_support", "esptool_py", "vfs", "spi_flash" ],
+            "priv_reqs": [ "bootloader_support", "esptool_py", "vfs" ],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "include_dirs": [ "include" ]
@@ -1591,5 +1642,12 @@
             "include_dirs": [ ".", "micro-ecc" ]
         }
     },
-    "debug_prefix_map_gdbinit": ""
+    "debug_prefix_map_gdbinit": "",
+    "gdbinit_files": {
+        "01_symbols": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/gdbinit/symbols",
+        "02_prefix_map": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/gdbinit/prefix_map",
+        "03_py_extensions": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/gdbinit/py_extensions",
+        "04_connect": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/gdbinit/connect"
+    },
+    "debug_arguments_openocd": "-f board/esp32s3-builtin.cfg"
 }

@@ -1,10 +1,11 @@
 #ifndef __I2CBUS_H__
 #define __I2CBUS_H__
 
+#include "config.h"
 #include "driver/i2c_slave.h"
 #include "esp_attr.h"
 #include "queue.h"
-#include "config.h"
+
 
 class I2CBUS {
 public:
@@ -12,6 +13,7 @@ public:
 
     bool writeBytes( uint8_t address, uint8_t *data, uint8_t size );
     void handleReceiveData( const i2c_slave_rx_done_event_data_t *data );
+    void processData();
 protected:
     Queue mQueue;
     uint8_t mSlaveAddr;

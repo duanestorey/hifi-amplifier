@@ -10,7 +10,7 @@
  */
 /*
  * Automatically generated file. DO NOT EDIT.
- * Espressif IoT Development Framework (ESP-IDF) 5.3.1 Configuration Header
+ * Espressif IoT Development Framework (ESP-IDF) 5.5.0 Configuration Header
  */
        
 /* List of deprecated options */
@@ -40,13 +40,15 @@ SECTIONS
     
  . = ALIGN(4); 
  _rtc_text_start = ABSOLUTE(.);
+    HIDDEN(_rtc_code_start = .);
     *(.rtc.entry.literal .rtc.entry.text)
     mapping[rtc_text]
     *rtc_wake_stub*.*(.literal .text .literal.* .text.*)
     *(.rtc_text_end_test)
-    /* Padding for possible CPU prefetch + alignment for PMS split lines */
-    . += 16;
-    . = ALIGN(256);
+    HIDDEN(_rtc_code_end = .);
+    /* Padding for possible CPU prefetch + 4B alignment for PMS split lines. */
+    . = ((_rtc_code_end - _rtc_code_start) == 0) ?
+        ALIGN(0) : 16 + ALIGN(4);
     _rtc_text_end = ABSOLUTE(.);
   } > rtc_iram_seg
   /**
@@ -183,16 +185,8 @@ SECTIONS
     . = 0x3C0;
     KEEP(*(.DoubleExceptionVector.text));
     . = 0x400;
-    _invalid_pc_placeholder = ABSOLUTE(.);
+    KEEP(*(._invalid_pc_placeholder.text));
     *(.*Vector.literal)
-    *(.UserEnter.literal);
-    *(.UserEnter.text);
-    . = ALIGN (16);
-    *(.entry.literal)
-    *(.entry.text)
-    *(.init.literal)
-    *(.init)
-    _init_end = ABSOLUTE(.);
   } > iram0_0_seg
   .iram0.text :
   {
@@ -342,15 +336,6 @@ SECTIONS
     *(.gnu.linkonce.h.*)
     __XT_EXCEPTION_DESCS_END__ = ABSOLUTE(.);
     *(.xt_except_desc_end)
-    
- . = ALIGN(4); 
- __eh_frame = ABSOLUTE(.);
-    KEEP(*(.eh_frame))
-    /**
-     * As we are not linking with crtend.o, which includes the CIE terminator
-     * (see __FRAME_END__ in libgcc sources), it is manually provided here.
-     */
-    LONG(0);
     /**
      * C++ constructor tables.
      *
@@ -511,6 +496,7 @@ SECTIONS
   {
    *(.fini)
    *(.eh_frame_hdr)
+   *(.eh_frame)
   }
 }
 ASSERT(((_iram_end - ORIGIN(iram0_0_seg)) <= LENGTH(iram0_0_seg)),

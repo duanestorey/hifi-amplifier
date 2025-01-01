@@ -5,6 +5,7 @@
 #include "freertos/task.h"
 #include "sdkconfig.h"
 #include "queue.h"
+#include "i2c-bus.h"
 
 class DSP {
     public:
@@ -18,6 +19,9 @@ class DSP {
     protected:
         Queue mGeneralQueue;
         Queue mAudioQueue;
+        I2CBUS *mI2C;
+    private:
+        uint8_t getI2CAddress();
 };
 
 #endif

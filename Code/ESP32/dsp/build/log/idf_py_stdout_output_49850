@@ -1,5 +1,0 @@
-[0/1] Re-running CMake...
--- Building ESP-IDF components for target esp32s3
--- Configuring incomplete, errors occurred!
-FAILED: build.ninja 
-/opt/homebrew/Cellar/cmake/3.27.4/bin/cmake --regenerate-during-build -S/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp -B/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build
