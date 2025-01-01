@@ -1,23 +1,74 @@
 #include "pipeline.h"
 #include <limits>
+#include <memory.h>
 #include <esp_dsp.h>
 
-Pipeline::Pipeline( uint32_t samples ) : mSamples( samples ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), mOutput32s( 0 ) {
-    allocate( samples );
+Pipeline::Pipeline( uint32_t samples ) : mSamples( samples ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
+    mOutput32s( 0 ), mHasAttenuation( false ) {
+
+    allocate();
+
+    mAttenuation[ 0 ] = 0;
+    mAttenuation[ 1 ] = 0;
+    
+    mGainFactor[ 0 ] = 1; 
+    mGainFactor[ 1 ] = 1; 
 }
 
 Pipeline::~Pipeline() {
     deallocate();
 }
 
+void Pipeline::modifySamples( uint32_t samples ) {
+    deallocate();
+
+    mSamples = samples;
+    allocate();
+}
+
 void 
-Pipeline::allocate( uint32_t samples ) {
-    mInputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * samples );
-    mInputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * samples );
-    mOutputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * samples );
-    mOutputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * samples );
-    mOutputFloat = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * 2 * samples );
-    mOutput32s = (int32_t *)aligned_alloc( sizeof( int32_t ), sizeof( int32_t ) * 2 * samples );
+Pipeline::resetAll() {
+    mAttenuation[ 0 ] = 0;
+    mAttenuation[ 1 ] = 0;
+    mGainFactor[ 0 ] = 1; 
+    mGainFactor[ 1 ] = 1; 
+
+    mHasAttenuation = false;
+
+    for( Biquads::iterator i = mBiquads[ 0 ].begin(); i != mBiquads[ 0 ].end(); i++ ) {
+        Biquad *biquad = (*i);
+        delete biquad;
+    }
+
+    for( Biquads::iterator i = mBiquads[ 1 ].begin(); i != mBiquads[ 1 ].end(); i++ ) {
+        Biquad *biquad = (*i);
+        delete biquad;
+    }
+
+    mBiquads[ 0 ].clear();
+    mBiquads[ 1 ].clear();
+}
+
+void 
+Pipeline::setAttenuation( float leftLevel, float rightLevel ) {
+    mAttenuation[ 0 ] = leftLevel;
+    mAttenuation[ 1 ] = rightLevel;
+    
+    mGainFactor[ 0 ] = 1.0f/pow( 10, leftLevel/20.0f );
+    mGainFactor[ 1 ] = 1.0f/pow( 10, rightLevel/20.0f );
+
+    mHasAttenuation = true;
+}
+
+void 
+Pipeline::allocate() {
+    mInputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    mInputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    mOutputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    mOutputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    mOutputFloat = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * 2 * mSamples );
+    mOutput32s = (int32_t *)aligned_alloc( sizeof( int32_t ), sizeof( int32_t ) * 2 * mSamples );
+    mOutput16s = (int16_t *)aligned_alloc( sizeof( int16_t ), sizeof( int16_t ) * 2 * mSamples );
 }
 
 int32_t 
@@ -30,6 +81,37 @@ Pipeline::convertFloatToInt32( float f ) {
     } else if ( f < min ) {
         return min;
     } else return std::round<int32_t>( f );
+}
+
+int16_t 
+Pipeline::convertFloatToInt16( float f ) {
+    static int16_t max = std::numeric_limits<int16_t>::max();
+    static int16_t min = std::numeric_limits<int16_t>::min();
+
+    if ( f > max ) {
+        return max;
+    } else if ( f < min ) {
+        return min;
+    } else return std::round<int16_t>( f );
+}
+
+int16_t *
+Pipeline::process( int16_t *data ) {
+    // convert stereo inputs into two mono channels
+    for ( uint32_t i = 0; i < mSamples; i++ ) {
+        mInputLeft[ i ] = (float)data[ i*2 ];
+        mInputRight[ i ] = (float)data[ i*2 + 1 ];
+    }
+
+    process();
+
+    // convert two mono channels into one stereo channel for output
+    for ( uint32_t i = 0; i < mSamples; i++ ) {
+        mOutput16s[ i*2 ] = convertFloatToInt16( mOutputLeft[ i ] );
+        mOutput16s[ i*2 + 1 ] = convertFloatToInt16( mOutputRight[ i ] );
+    }
+
+    return mOutput16s;
 }
 
 float * 
@@ -74,10 +156,26 @@ void
 Pipeline::process() {
     for( Biquads::iterator i = mBiquads[ 0 ].begin(); i != mBiquads[ 0 ].end(); i++ ) {
         dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, mSamples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+
+        if ( i != mBiquads[ 0 ].end() ) {
+            memcpy( mInputLeft, mOutputLeft, sizeof( float ) * mSamples );
+        }
     }
 
     for( Biquads::iterator i = mBiquads[ 1 ].begin(); i != mBiquads[ 1 ].end(); i++ ) {
         dsps_biquad_f32_aes3( mInputRight, mOutputRight, mSamples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+
+        if ( i != mBiquads[ 1 ].end() ) {
+            memcpy( mInputRight, mOutputRight, sizeof( float ) * mSamples );
+        }
+    }
+
+    if ( mHasAttenuation ) {
+        memcpy( mInputLeft, mOutputLeft, sizeof( float ) * mSamples );  
+        memcpy( mInputRight, mOutputRight, sizeof( float ) * mSamples );
+
+        dsps_mulc_f32_ae32( mInputLeft, mOutputLeft, mSamples, mGainFactor[ 0 ], 1, 1 );
+        dsps_mulc_f32_ae32( mInputRight, mOutputRight, mSamples, mGainFactor[ 1 ], 1, 1 );
     }
 }
 
@@ -111,7 +209,12 @@ Pipeline::deallocate() {
     if ( mOutput32s ) {
         free( mOutput32s );
         mOutput32s = 0;
-    }     
+    } 
+    
+    if ( mOutput16s ) {
+        free( mOutput16s );
+        mOutput16s = 0;
+    }    
 }
 
 void 

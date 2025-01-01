@@ -14,9 +14,15 @@ class Pipeline {
         void addBiquadLeft( Biquad *biquad );
         void addBiquadRight( Biquad *biquad );
         void resetDelayLines();
-        void generate( uint32_t samplingRate );
         float *process( float *data );
+        int16_t *process( int16_t *data );
         int32_t *process( int32_t *data );
+
+        void setAttenuation( float leftLevel, float rightLevel );
+        void resetAll();
+
+        void generate( uint32_t samplingRate );
+        void modifySamples( uint32_t samples );
     protected:
         uint32_t mSamples;
         float *mInputLeft;
@@ -26,14 +32,19 @@ class Pipeline {
         
         float *mOutputFloat;
         int32_t *mOutput32s;
+        int16_t *mOutput16s;
 
         Biquads mBiquads[ 2 ];
+        float mAttenuation[ 2 ];
+        float mGainFactor[ 2 ];
+        bool mHasAttenuation;
     private:
         void process();
 
-        void allocate( uint32_t samples );
+        void allocate();
         void deallocate();
         inline int32_t convertFloatToInt32( float f );
+        inline int16_t convertFloatToInt16( float f );
 };
 
 #endif
