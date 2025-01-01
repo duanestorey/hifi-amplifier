@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "bootloader",
-    "project_version":    "v5.5-dev-1050-gb5ac4fbdf9",
+    "project_version":    "v5.5-dev-1050-gb5ac4fbdf9-dirty",
     "project_path":       "/Users/duane/Code/Github/esp-idf/components/bootloader/subproject",
     "idf_path":           "/Users/duane/Code/Github/esp-idf",
     "build_dir":          "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader",
@@ -11,7 +11,7 @@
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
     "build_type":         "flash_app",
-    "git_revision":       "v5.5-dev-1050-gb5ac4fbdf9",
+    "git_revision":       "v5.5-dev-1050-gb5ac4fbdf9-dirty",
     "target":             "esp32s3",
     "rev":                "",
     "min_rev":            "0",

@@ -8,7 +8,7 @@ typedef std::vector<Biquad *> Biquads;
 
 class Pipeline {
     public:
-        Pipeline( uint32_t samples );
+        Pipeline();
         ~Pipeline();
 
         void addBiquadLeft( Biquad *biquad );
@@ -20,9 +20,10 @@ class Pipeline {
 
         void setAttenuation( float leftLevel, float rightLevel );
         void resetAll();
+        void destroy();
 
         void generate( uint32_t samplingRate );
-        void modifySamples( uint32_t samples );
+        void setSamples( uint32_t samples );
     protected:
         uint32_t mSamples;
         float *mInputLeft;
@@ -41,8 +42,13 @@ class Pipeline {
     private:
         void process();
 
-        void allocate();
+        void checkAllocateFloat();
+        void checkAllocateSigned32();
+        void checkAllocateSigned16();
+
         void deallocate();
+
+
         inline int32_t convertFloatToInt32( float f );
         inline int16_t convertFloatToInt16( float f );
 };

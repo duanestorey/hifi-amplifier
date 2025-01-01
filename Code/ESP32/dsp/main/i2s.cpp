@@ -2,7 +2,8 @@
 #include "config.h"
 #include <memory.h>
 
-I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mBitDepth( 16 ), mBytesWaiting( 0 ), mTxHandle( 0 ), mRxHandle( 0 ), mTransmitStarted( false ) {
+I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), mBytesWaiting( 0 ), mTxHandle( 0 ), mRxHandle( 0 ), 
+    mTransmitStarted( false ), mBuffer( 0 ) {
     memset( &mConfig, 0, sizeof( mConfig ) );
 }
 
@@ -22,22 +23,34 @@ bool i2s_recv_callback(i2s_chan_handle_t handle, i2s_event_data_t *event, void *
 
 void 
 I2S::readData( uint8_t *data, size_t maxSize, size_t &dataSize ) {
-    i2s_channel_read( mRxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
+    if ( mRxHandle ) {
+        i2s_channel_read( mRxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
+    } else {
+        dataSize = 0;
+    }  
 }
 
 void 
 I2S::writeData( uint8_t *data, size_t maxSize, size_t &dataSize ) {
-    if ( !mTransmitStarted ) {
-        i2s_channel_preload_data( mTxHandle, data, maxSize, &dataSize );
-        i2s_channel_enable( mTxHandle );
+    if ( mTxHandle ) {
+        if ( !mTransmitStarted ) {
+            i2s_channel_preload_data( mTxHandle, data, maxSize, &dataSize );
+            i2s_channel_enable( mTxHandle );
+        } else {
+            i2s_channel_write( mTxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
+        }   
     } else {
-        i2s_channel_write( mTxHandle, data, maxSize, &dataSize, DSP_I2S_MAX_TIMEOUT );
+        dataSize = 0;
     }
 }
 
 void 
-I2S::start( uint32_t samplingRate ) {
+I2S::start( uint32_t samplingRate, uint8_t bitDepth, uint8_t slotDepth ) {
     mSamplingRate = samplingRate;
+    mBitDepth = bitDepth;
+    mSlotDepth = slotDepth;
+
+    mBuffer = new Circ_Buffer( mSamplingRate * 2 * mSlotDepth / ( 10 * 80 ) );
 
     /* Allocate a pair of I2S channel */
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG( I2S_NUM_AUTO, I2S_ROLE_SLAVE );
@@ -69,12 +82,17 @@ I2S::start( uint32_t samplingRate ) {
 
     if ( mBitDepth == 16 ) {
         mConfig.slot_cfg.data_bit_width = I2S_DATA_BIT_WIDTH_16BIT;
-        mConfig.slot_cfg.slot_bit_width = I2S_SLOT_BIT_WIDTH_16BIT;
     } else if ( mBitDepth == 24 ) {
         mConfig.slot_cfg.data_bit_width = I2S_DATA_BIT_WIDTH_24BIT;
-        mConfig.slot_cfg.slot_bit_width = I2S_SLOT_BIT_WIDTH_32BIT;
     } else if ( mBitDepth == 32 ) {
         mConfig.slot_cfg.data_bit_width = I2S_DATA_BIT_WIDTH_32BIT;
+    }
+
+    if ( mSlotDepth == 16 ) {
+        mConfig.slot_cfg.slot_bit_width = I2S_SLOT_BIT_WIDTH_16BIT;
+    } else if ( mSlotDepth == 24 ) {
+        mConfig.slot_cfg.slot_bit_width = I2S_SLOT_BIT_WIDTH_24BIT;
+    } else if ( mSlotDepth == 32 ) {
         mConfig.slot_cfg.slot_bit_width = I2S_SLOT_BIT_WIDTH_32BIT;
     }
 
@@ -91,4 +109,26 @@ I2S::start( uint32_t samplingRate ) {
     i2s_channel_register_event_callback( mRxHandle, &i2s_callbacks, (void *)this );
 
     i2s_channel_enable( mRxHandle );
+}
+
+void 
+I2S::stop() {
+    if ( mTxHandle ) {
+        i2s_channel_disable( mTxHandle );
+        i2s_del_channel( mTxHandle );
+        mTxHandle = 0;
+    }
+
+    if ( mRxHandle ) {
+        i2s_channel_disable( mRxHandle );
+        i2s_del_channel( mRxHandle );
+        mRxHandle = 0;
+    }
+
+    if ( mBuffer ) {
+        delete mBuffer;
+        mBuffer = 0;
+    }
+
+    memset( &mConfig, 0, sizeof( mConfig ) );
 }

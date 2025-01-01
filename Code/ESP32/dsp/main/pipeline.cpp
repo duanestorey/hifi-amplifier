@@ -3,10 +3,8 @@
 #include <memory.h>
 #include <esp_dsp.h>
 
-Pipeline::Pipeline( uint32_t samples ) : mSamples( samples ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
+Pipeline::Pipeline() : mSamples( 0 ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
     mOutput32s( 0 ), mHasAttenuation( false ) {
-
-    allocate();
 
     mAttenuation[ 0 ] = 0;
     mAttenuation[ 1 ] = 0;
@@ -16,14 +14,12 @@ Pipeline::Pipeline( uint32_t samples ) : mSamples( samples ), mInputLeft( 0 ), m
 }
 
 Pipeline::~Pipeline() {
-    deallocate();
+    destroy();
 }
 
-void Pipeline::modifySamples( uint32_t samples ) {
+void Pipeline::setSamples( uint32_t samples ) {
     deallocate();
-
     mSamples = samples;
-    allocate();
 }
 
 void 
@@ -47,6 +43,8 @@ Pipeline::resetAll() {
 
     mBiquads[ 0 ].clear();
     mBiquads[ 1 ].clear();
+
+    deallocate();
 }
 
 void 
@@ -61,14 +59,40 @@ Pipeline::setAttenuation( float leftLevel, float rightLevel ) {
 }
 
 void 
-Pipeline::allocate() {
-    mInputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
-    mInputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
-    mOutputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
-    mOutputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
-    mOutputFloat = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * 2 * mSamples );
-    mOutput32s = (int32_t *)aligned_alloc( sizeof( int32_t ), sizeof( int32_t ) * 2 * mSamples );
-    mOutput16s = (int16_t *)aligned_alloc( sizeof( int16_t ), sizeof( int16_t ) * 2 * mSamples );
+Pipeline::checkAllocateFloat() {
+    if ( !mInputLeft ) {
+        mInputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    }
+    
+    if ( !mInputRight ) {
+        mInputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    }
+    
+    if ( !mOutputLeft ) {
+        mOutputLeft = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    }
+
+    if ( !mOutputRight ) {
+        mOutputRight = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * mSamples );
+    }
+
+    if ( !mOutputFloat ) {
+        mOutputFloat = (float *)aligned_alloc( sizeof( float ), sizeof( float ) * 2 * mSamples );
+    }
+}
+
+void 
+Pipeline::checkAllocateSigned32() {
+    if ( !mOutput32s ) {
+        mOutput32s = (int32_t *)aligned_alloc( sizeof( int32_t ), sizeof( int32_t ) * 2 * mSamples );
+    }
+}
+
+void 
+Pipeline::checkAllocateSigned16() {
+    if ( !mOutput16s ) {
+        mOutput16s = (int16_t *)aligned_alloc( sizeof( int16_t ), sizeof( int16_t ) * 2 * mSamples );
+    }
 }
 
 int32_t 
@@ -97,6 +121,9 @@ Pipeline::convertFloatToInt16( float f ) {
 
 int16_t *
 Pipeline::process( int16_t *data ) {
+    checkAllocateFloat();
+    checkAllocateSigned16();
+
     // convert stereo inputs into two mono channels
     for ( uint32_t i = 0; i < mSamples; i++ ) {
         mInputLeft[ i ] = (float)data[ i*2 ];
@@ -116,6 +143,8 @@ Pipeline::process( int16_t *data ) {
 
 float * 
 Pipeline::process( float *data ) {
+    checkAllocateFloat();
+
     // convert stereo inputs into two mono channels
     for ( uint32_t i = 0; i < mSamples; i++ ) {
         mInputLeft[ i ] = data[ i*2 ];
@@ -135,6 +164,9 @@ Pipeline::process( float *data ) {
 
 int32_t * 
 Pipeline::process( int32_t *data ) {
+    checkAllocateFloat();
+    checkAllocateSigned32();
+
     // convert stereo inputs into two mono channels
     for ( uint32_t i = 0; i < mSamples; i++ ) {
         mInputLeft[ i ] = (float)data[ i*2 ];
@@ -215,6 +247,11 @@ Pipeline::deallocate() {
         free( mOutput16s );
         mOutput16s = 0;
     }    
+}
+
+void 
+Pipeline::destroy() {
+    deallocate();
 }
 
 void 
