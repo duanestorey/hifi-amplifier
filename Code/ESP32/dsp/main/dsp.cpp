@@ -56,7 +56,7 @@ DSP::handleGeneralThread() {
     Message msg;
 
     mI2C = new I2CBUS( getI2CAddress(), mGeneralQueue );
-
+    
     while ( mGeneralQueue.waitForMessage( msg, 5 ) ) {
         switch( msg.mMessageType ) {
             case Message::MSG_I2C:
@@ -65,6 +65,23 @@ DSP::handleGeneralThread() {
             default:
                 break;
         }
+    }
+}
+
+void 
+DSP::onNewI2CData( uint8_t reg, uint8_t *buffer, uint8_t dataSize ) {
+    // this will be on the general thread
+    switch( reg ) {
+        case REGISTER_RESET:
+            break;
+        case REGISTER_SET_FREQ:
+            break;
+        case REGISTER_ADD_BIQUAD:
+            break;
+        case REGISTER_START:
+            break;
+        case REGISTER_VERSION:
+            break;
     }
 }
 

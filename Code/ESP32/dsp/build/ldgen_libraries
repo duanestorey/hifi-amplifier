@@ -84,4 +84,5 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/touch_element/libtouch_element.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/usb/libusb.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/espressif__esp-dsp/libespressif__esp-dsp.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/main/libmain.a

@@ -554,6 +554,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/espressif__esp-dsp/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/main/cmake_install.cmake")
 endif()
 

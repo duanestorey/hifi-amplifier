@@ -3,6 +3,9 @@
 
 #include "driver/gpio.h"
 
+#define DSP_VERSION_MAJOR		1
+#define DSP_VERSION_MINOR		0		
+
 #define DSP_I2C_BUFFER_SIZE		128
 #define DSP_I2C_BASE_ADDR		0b1010000
 

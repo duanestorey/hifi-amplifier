@@ -31568,6 +31568,154 @@
                 "id": "component-config-wi-fi-provisioning-manager",
                 "title": "Wi-Fi Provisioning Manager",
                 "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": "IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32P4",
+                        "help": null,
+                        "id": "DSP_OPTIMIZATIONS_SUPPORTED",
+                        "name": "DSP_OPTIMIZATIONS_SUPPORTED",
+                        "range": null,
+                        "title": null,
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_OPTIMIZATION>",
+                                "help": null,
+                                "id": "DSP_ANSI",
+                                "name": "DSP_ANSI",
+                                "range": null,
+                                "title": "ANSI C",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "DSP_OPTIMIZATIONS_SUPPORTED && <choice DSP_OPTIMIZATION>",
+                                "help": null,
+                                "id": "DSP_OPTIMIZED",
+                                "name": "DSP_OPTIMIZED",
+                                "range": null,
+                                "title": "Optimized",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "An ANSI C version could be used for verification and debug purpose,\nor for chips where an optimized version is not available.",
+                        "id": "component-config-dsp-library-dsp-optimization",
+                        "name": "DSP_OPTIMIZATION",
+                        "title": "DSP Optimization",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "DSP_OPTIMIZATION",
+                        "name": "DSP_OPTIMIZATION",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_512",
+                                "name": "DSP_MAX_FFT_SIZE_512",
+                                "range": null,
+                                "title": "512",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_1024",
+                                "name": "DSP_MAX_FFT_SIZE_1024",
+                                "range": null,
+                                "title": "1024",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_2048",
+                                "name": "DSP_MAX_FFT_SIZE_2048",
+                                "range": null,
+                                "title": "2048",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_4096",
+                                "name": "DSP_MAX_FFT_SIZE_4096",
+                                "range": null,
+                                "title": "4096",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_8192",
+                                "name": "DSP_MAX_FFT_SIZE_8192",
+                                "range": null,
+                                "title": "8192",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_16384",
+                                "name": "DSP_MAX_FFT_SIZE_16384",
+                                "range": null,
+                                "title": "16384",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice DSP_MAX_FFT_SIZE>",
+                                "help": null,
+                                "id": "DSP_MAX_FFT_SIZE_32768",
+                                "name": "DSP_MAX_FFT_SIZE_32768",
+                                "range": null,
+                                "title": "32768",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "This is default FFT size for internal usage.",
+                        "id": "component-config-dsp-library-maximum-fft-length",
+                        "name": "DSP_MAX_FFT_SIZE",
+                        "title": "Maximum FFT length",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "DSP_MAX_FFT_SIZE",
+                        "name": "DSP_MAX_FFT_SIZE",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-dsp-library",
+                "title": "DSP Library",
+                "type": "menu"
             }
         ],
         "depends_on": null,
