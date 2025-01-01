@@ -73,6 +73,9 @@ DSP::handleAudioThread() {
     uint8_t *processed = 0;
 
     mPipeline = new Pipeline( samplesPerPayload );
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 2000, 0.707 ) );
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 2000, 0.707 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 2000, 0.5 ) );
 
     while ( mAudioQueue.waitForMessage( msg, 5 ) ) {
         switch( msg.mMessageType ) {
