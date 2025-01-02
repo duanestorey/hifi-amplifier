@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <esp_dsp.h>
 #include "debug.h"
+#include "dsp-custom.h"
 
 Pipeline::Pipeline( Profile *profile ) : mSamples( 0 ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
     mOutput32s( 0 ), mOutput16s( 0 ), mProfile( profile ) {
@@ -106,6 +107,7 @@ Pipeline::checkAllocateSigned16() {
 
 int32_t 
 Pipeline::convertFloatToInt32( float f ) {
+/*
     static int32_t max = std::numeric_limits<int32_t>::max();
     static int32_t min = std::numeric_limits<int32_t>::min();
 
@@ -118,18 +120,20 @@ Pipeline::convertFloatToInt32( float f ) {
     }
 
     return std::round<int32_t>( f );
-/*
+    */
+
     int result;
     asm("ROUND.S %0, %1, 0\t\n"
         : "=a" (result)
         : "f" (f));
 
     return result;
-    */
+    
 }
 
 int16_t 
 Pipeline::convertFloatToInt16( float f ) {
+/*
     static int16_t max = std::numeric_limits<int16_t>::max();
     static int16_t min = std::numeric_limits<int16_t>::min();
 
@@ -142,14 +146,15 @@ Pipeline::convertFloatToInt16( float f ) {
     }
 
     return std::round<int16_t>( f );
-/*
+    */
+
     int result;
     asm("ROUND.S %0, %1, 0\t\n"
         : "=a" (result)
         : "f" (f));
 
     return result;
-    */
+    
 }
 
 int16_t *
@@ -172,9 +177,10 @@ Pipeline::process( int16_t *data, uint32_t samples ) {
     //AMP_DEBUG_I( "Converting" );
 
     // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mInputLeft[ i ] = (float)data[ i*2 ];
-        mInputRight[ i ] = (float)data[ i*2 + 1 ];
+    for ( uint32_t i = 0; i < samples*2; i++ ) {
+       // mInputLeft[ i ] = (float)data[ i*2 ];
+      //  mInputRight[ i ] = (float)data[ i*2 + 1 ];
+        mOutputFloat[ i ] = (float)data[ i ];
     }
 
     mProfile->stopProfiling( "deinterleave" );
@@ -188,9 +194,10 @@ Pipeline::process( int16_t *data, uint32_t samples ) {
     //AMP_DEBUG_I( "Converting back" );
 
     // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mOutput16s[ i*2 ] = convertFloatToInt16( mOutputLeft[ i ] );
-        mOutput16s[ i*2 + 1 ] = convertFloatToInt16( mOutputRight[ i ] );
+    for ( uint32_t i = 0; i < samples*2; i++ ) {
+       // mOutput16s[ i*2 ] = convertFloatToInt16( mOutputLeft[ i ] );
+        //mOutput16s[ i*2 + 1 ] = convertFloatToInt16( mOutputRight[ i ] );
+        mOutput16s[ i ] = convertFloatToInt16( mOutputFloat[ i ] );
     }
 
      mProfile->stopProfiling( "output" );
@@ -215,9 +222,10 @@ Pipeline::process( int32_t *data, uint32_t samples ) {
     mProfile->startProfiling( "deinterleave" );
 
     // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mInputLeft[ i ] = (float)data[ i*2 ];
-        mInputRight[ i ] = (float)data[ i*2 + 1 ];
+    for ( uint32_t i = 0; i < samples*2; i++ ) {
+       // mInputLeft[ i ] = (float)data[ i*2 ];
+       // mInputRight[ i ] = (float)data[ i*2 + 1 ];
+        mOutputFloat[ i ] = (float)data[ i ];
     }
 
     mProfile->stopProfiling( "deinterleave" );
@@ -227,9 +235,10 @@ Pipeline::process( int32_t *data, uint32_t samples ) {
     mProfile->startProfiling( "output" );
 
     // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mOutput32s[ i*2 ] = convertFloatToInt32( mOutputLeft[ i ] );
-        mOutput32s[ i*2 + 1 ] = convertFloatToInt32( mOutputRight[ i ] );
+    for ( uint32_t i = 0; i < samples*2; i++ ) {
+       // mOutput32s[ i*2 ] = convertFloatToInt32( mOutputLeft[ i ] );
+      //  mOutput32s[ i*2 + 1 ] = convertFloatToInt32( mOutputRight[ i ] );
+        mOutput32s[ i ] = convertFloatToInt32( mOutputFloat[ i ] );
     }
 
     mProfile->stopProfiling( "output" );
@@ -252,10 +261,13 @@ Pipeline::process( float *data, uint32_t samples ) {
     mProfile->startProfiling( "deinterleave" );
 
     // convert stereo inputs into two mono channels
+    memcpy( mOutputFloat, data, sizeof( float ) * samples * 2 );
+    /*
     for ( uint32_t i = 0; i < samples; i++ ) {
         mInputLeft[ i ] = data[ i*2 ];
         mInputRight[ i ] = data[ i*2 + 1 ];
     }
+    */
 
     mProfile->stopProfiling( "deinterleave" );
 
@@ -264,10 +276,12 @@ Pipeline::process( float *data, uint32_t samples ) {
     mProfile->startProfiling( "output" );
 
     // convert two mono channels into one stereo channel for output
+    /*
     for ( uint32_t i = 0; i < samples; i++ ) {
         mOutputFloat[ i*2 ] = mOutputLeft[ i ];
         mOutputFloat[ i*2 + 1 ] = mOutputRight[ i ];
     }
+    */
 
     mProfile->stopProfiling( "output" );
 
@@ -289,14 +303,6 @@ Pipeline::process( uint32_t samples ) {
         }
 
         mProfile->stopProfiling( "biquadleft" );
-
-        /*
-        mProfile->startProfiling( "biquadleftcopy" );       
-        if ( i != mBiquads[ 0 ].end() ) {
-            memcpy( mInputLeft, mOutputLeft, sizeof( float ) * samples );
-        }
-        mProfile->stopProfiling( "biquadleftcopy" );   
-        */ 
     }
 
     first = true;
@@ -312,13 +318,6 @@ Pipeline::process( uint32_t samples ) {
 
         mProfile->stopProfiling( "biquadright" );
 
-        /*
-        mProfile->startProfiling( "biquadrightcopy" );
-        if ( i != mBiquads[ 1 ].end() ) {
-            memcpy( mInputRight, mOutputRight, sizeof( float ) * samples );
-        }
-        mProfile->stopProfiling( "biquadrightcopy" );
-        */
     }
 
     mProfile->startProfiling( "attenuate" );

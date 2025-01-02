@@ -64,12 +64,12 @@ DSP::start() {
         "Audio Thread",
         4096,
         (void *)this,
-        2,
+        1,
         NULL
     );   
 
     while ( true ) {
-        vTaskDelay( 1000 / portTICK_PERIOD_MS );
+        vTaskDelay( 10 / portTICK_PERIOD_MS );
     }
 
 }
@@ -168,44 +168,31 @@ DSP::handleAudioThread() {
 
     mPipeline->setSamples( packetSamples );
     int32_t *buffer = (int32_t *)aligned_alloc( 2 * sizeof( int32_t ), 2 * sizeof( int32_t ) * packetSamples );
-    memset( buffer, 0xf0,  2 * sizeof( int32_t ) * packetSamples );
+    for ( int i = 0 ; i < packetSamples; i++ ) {
+        buffer[i*2] = 1000 + ( rand() % 10 ) - 5;
+        buffer[i*2+1] =  buffer[i*2];
+    }
 
     AMP_DEBUG_I( "Setting up timer" );
     mTimerID = mTimer->setTimer( 1000, mAudioQueue, true );
 
     AMP_DEBUG_I( "Adding Biquad filters" );
-
-    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 2404, 6.026, 2.20 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 2404, 6.026, 2.20 ) );
-
-    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 2979, 3.142, 4.70  ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 2979, 3.142, 4.70  ) );
-
-    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 4798, 6.476, 2.10 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 4798, 6.476, 2.10 ) );
-
-    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 5679, 2.244, -1.60 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 5679, 2.244, -1.60 ) );
-
-    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 12358, 1.426, -2.70 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 12358, 1.426, -2.70 ) );
     
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1500, 0.707 ) );
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1500, 0.707 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1500, 0.707 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1500, 0.707 ) );
-
-
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1200, 0.707 ) );
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1200, 0.707 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1200, 0.707 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1200, 0.707 ) );
     
     // drop tweeter
-    mPipeline->setAttenuationRight( 3 );
+ //   mPipeline->setAttenuationLeft( 3 );
+ //   mPipeline->setAttenuationRight( 3 );
 
     mPipeline->generate( mSamplingRate );
 
     AMP_DEBUG_I( "Waiting for messages on Audio Thread" );
 
     while ( true ) {
-        while ( mAudioQueue.waitForMessage( msg, 10 ) ) {
+        while ( mAudioQueue.waitForMessage( msg, 50 ) ) {
             switch( msg.mMessageType ) {
                 case Message::MSG_I2S_RECV:
                     processAudio();
@@ -226,11 +213,13 @@ DSP::handleAudioThread() {
                     fullReset();
                     break;
                 case Message::MSG_TIMER:   
+                {
                     AMP_DEBUG_I( "Timer message received" );
                     mProfile->reset();
 
+                    int32_t *outBuf = 0;
                     for ( int i = 0; i < 100; i++ ) {
-                        mPipeline->process( buffer );
+                        outBuf = mPipeline->process( buffer );
                     }
 
                     {
@@ -241,9 +230,29 @@ DSP::handleAudioThread() {
                         
                     }
 
+                    {
+                    
+                        std::stringstream s;
+                        
+                        for ( int i = 0 ; i < packetSamples; i++ ) {
+                            s << outBuf[ 2*i ] << " ";
+                        }
+
+                        AMP_DEBUG_I( "Filtered woofer data - %s\n\n", s.str().c_str() );
+                        
+                        s.str( "" );
+                        
+                        for ( int i = 0 ; i < packetSamples; i++ ) {
+                            s << outBuf[ 2*i + 1] << " ";
+                        }
+
+                        AMP_DEBUG_I( "Filtered tweeter data - %s\n\n", s.str().c_str() );
+                    }
+
                     mProfile->dump();
 
                   //  mProfile->tick();
+                }
                     break;
                 default:
                     break;
@@ -264,7 +273,7 @@ DSP::handleGeneralThread() {
     
     AMP_DEBUG_I( "Waiting for messages on General Thread" );
     while ( true ) {
-        while ( mGeneralQueue.waitForMessage( msg, 5 ) ) {
+        while ( mGeneralQueue.waitForMessage( msg, 50 ) ) {
             switch( msg.mMessageType ) {
                 case Message::MSG_I2C:
                     mI2C->processData();
