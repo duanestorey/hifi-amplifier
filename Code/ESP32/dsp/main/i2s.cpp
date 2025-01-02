@@ -1,5 +1,6 @@
 #include "i2s.h"
 #include "config.h"
+#include "debug.h"
 #include <memory.h>
 
 I2S::I2S( Queue queue ) : mQueue( queue ), mSamplingRate( 0 ), mPreloadedAmount( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), mTxHandle( 0 ), mRxHandle( 0 ), 
@@ -41,7 +42,7 @@ I2S::writeData( uint8_t *data, size_t maxSize, size_t &dataSize ) {
             i2s_channel_preload_data( mTxHandle, data, maxSize, &dataSize );
             mPreloadedAmount += dataSize;
 
-            uint32_t minPreloadSize = ( mSamplingRate * 2 * mSlotDepth * DSP_I2S_PRELOAD_SIZE_MS / 8000 )
+            uint32_t minPreloadSize = ( mSamplingRate * 2 * mSlotDepth * DSP_I2S_PRELOAD_SIZE_MS / 8000 );
 
             if ( mPreloadedAmount >= minPreloadSize ) {
                 i2s_channel_enable( mTxHandle );
@@ -61,7 +62,9 @@ I2S::start( uint32_t samplingRate, uint8_t bitDepth, uint8_t slotDepth ) {
     mBitDepth = bitDepth;
     mSlotDepth = slotDepth;
 
-    mBuffer = new Circ_Buffer( mSamplingRate * 2 * mSlotDepth / ( 10 * 80 ) );
+    uint32_t circularSizeInBytes = ( ( mSamplingRate * 2 * mSlotDepth / 8 ) * DSP_I2S_PRELOAD_SIZE_MS ) / 1000;
+    mBuffer = new Circ_Buffer( circularSizeInBytes );
+    AMP_DEBUG_I( "Creating circular buffer of size %lu", circularSizeInBytes );
 
     /* Allocate a pair of I2S channel */
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG( I2S_NUM_AUTO, I2S_ROLE_SLAVE );
@@ -69,6 +72,7 @@ I2S::start( uint32_t samplingRate, uint8_t bitDepth, uint8_t slotDepth ) {
     i2s_new_channel( &chan_cfg, &mTxHandle, &mRxHandle );
 
     /* Set the configurations for BOTH TWO channels, since TX and RX channel have to be same in full-duplex mode */
+    /*
     mConfig = {
         .clk_cfg = {
             .sample_rate_hz = samplingRate,
@@ -90,6 +94,7 @@ I2S::start( uint32_t samplingRate, uint8_t bitDepth, uint8_t slotDepth ) {
             },
         },
     };
+    */
 
     if ( mBitDepth == 16 ) {
         mConfig.slot_cfg.data_bit_width = I2S_DATA_BIT_WIDTH_16BIT;

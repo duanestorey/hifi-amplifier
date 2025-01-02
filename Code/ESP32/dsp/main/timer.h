@@ -44,9 +44,4 @@ private:
     uint32_t getCurrentTimeInMS() const;
 };
 
-class TimerObserver {
-public:
-    virtual void onTimer( uint32_t eventID ) = 0;
-};
-
 #endif

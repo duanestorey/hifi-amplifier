@@ -31,7 +31,6 @@ $<TARGET_FILE:__idf_app_trace>
 $<TARGET_FILE:__idf_esp_event>
 $<TARGET_FILE:__idf_nvs_flash>
 $<TARGET_FILE:__idf_esp_phy>
-$<TARGET_FILE:__idf_esp_driver_usb_serial_jtag>
 $<TARGET_FILE:__idf_esp_vfs_console>
 $<TARGET_FILE:__idf_vfs>
 $<TARGET_FILE:__idf_lwip>
@@ -49,8 +48,9 @@ $<TARGET_FILE:__idf_esp_driver_i2s>
 $<TARGET_FILE:__idf_sdmmc>
 $<TARGET_FILE:__idf_esp_driver_sdmmc>
 $<TARGET_FILE:__idf_esp_driver_sdspi>
+$<TARGET_FILE:__idf_esp_driver_sdio>
+$<TARGET_FILE:__idf_esp_driver_dac>
 $<TARGET_FILE:__idf_esp_driver_rmt>
-$<TARGET_FILE:__idf_esp_driver_tsens>
 $<TARGET_FILE:__idf_esp_driver_sdm>
 $<TARGET_FILE:__idf_esp_driver_i2c>
 $<TARGET_FILE:__idf_esp_driver_ledc>
@@ -59,7 +59,6 @@ $<TARGET_FILE:__idf_http_parser>
 $<TARGET_FILE:__idf_esp-tls>
 $<TARGET_FILE:__idf_esp_adc>
 $<TARGET_FILE:__idf_esp_driver_cam>
-$<TARGET_FILE:__idf_esp_driver_touch_sens>
 $<TARGET_FILE:__idf_esp_eth>
 $<TARGET_FILE:__idf_esp_gdbstub>
 $<TARGET_FILE:__idf_esp_hid>
@@ -81,8 +80,6 @@ $<TARGET_FILE:__idf_nvs_sec_provider>
 $<TARGET_FILE:__idf_perfmon>
 $<TARGET_FILE:__idf_rt>
 $<TARGET_FILE:__idf_spiffs>
-$<TARGET_FILE:__idf_touch_element>
-$<TARGET_FILE:__idf_usb>
 $<TARGET_FILE:__idf_wifi_provisioning>
 $<TARGET_FILE:__idf_espressif__esp-dsp>
 $<TARGET_FILE:__idf_main>

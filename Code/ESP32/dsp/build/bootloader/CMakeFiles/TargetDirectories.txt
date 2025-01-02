@@ -11,9 +11,6 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/size.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/size-files.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/size-components.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/dfu.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/dfu-list.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/dfu-flash.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/uf2.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/uf2-app.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/CMakeFiles/edit_cache.dir
@@ -63,10 +60,8 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/edit_cache.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/CMakeFiles/rebuild_cache.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/port/esp32s3/CMakeFiles/edit_cache.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/port/esp32s3/CMakeFiles/rebuild_cache.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/mspi_timing_tuning/port/esp32s3/CMakeFiles/edit_cache.dir
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/mspi_timing_tuning/port/esp32s3/CMakeFiles/rebuild_cache.dir
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/port/esp32/CMakeFiles/edit_cache.dir
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/port/esp32/CMakeFiles/rebuild_cache.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/lowpower/CMakeFiles/edit_cache.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_hw_support/lowpower/CMakeFiles/rebuild_cache.dir
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/bootloader/esp-idf/esp_common/CMakeFiles/__idf_esp_common.dir

@@ -2428,6 +2428,12 @@
 		(color 0 0 0 0)
 		(uuid "0c3329b6-a0af-4827-8ab6-f62fed85bbb5")
 	)
+	(junction
+		(at 109.22 148.59)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fee86a10-0e9b-49d4-b665-89d0eced9afe")
+	)
 	(wire
 		(pts
 			(xy 69.85 171.45) (xy 69.85 168.91)
@@ -2500,6 +2506,16 @@
 	)
 	(wire
 		(pts
+			(xy 109.22 152.4) (xy 109.22 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b2a49265-83b8-4aa4-9205-12104ed38c14")
+	)
+	(wire
+		(pts
 			(xy 39.37 162.56) (xy 39.37 163.83)
 		)
 		(stroke
@@ -2517,6 +2533,26 @@
 			(type default)
 		)
 		(uuid "b747119c-23ae-4595-9eef-d1678a2434cf")
+	)
+	(wire
+		(pts
+			(xy 109.22 148.59) (xy 87.63 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bc99dfa5-cbe2-43e7-bafd-1d7a59331efa")
+	)
+	(wire
+		(pts
+			(xy 115.57 148.59) (xy 109.22 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce9da77e-6d15-46b6-b811-40ba331ee26b")
 	)
 	(wire
 		(pts
@@ -2557,6 +2593,16 @@
 			(type default)
 		)
 		(uuid "ef2640dd-bc7f-4904-8873-69777f68f5a4")
+	)
+	(wire
+		(pts
+			(xy 109.22 158.75) (xy 109.22 157.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f2137d36-6e1c-490c-a5be-37d228ad5fe6")
 	)
 	(wire
 		(pts
@@ -2678,6 +2724,28 @@
 			)
 		)
 	)
+	(global_label "GND"
+		(shape input)
+		(at 182.88 106.68 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0f418672-695f-48b7-8d85-4f74c0a782a0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 189.7357 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "DSP_EN2"
 		(shape input)
 		(at 189.23 45.72 0)
@@ -2788,6 +2856,28 @@
 			)
 		)
 	)
+	(global_label "MONOBLOCK_ENABLE"
+		(shape input)
+		(at 182.88 96.52 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1b828aad-9fee-4eab-8289-f78db4bfc18e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 205.4595 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "ADC_GPIO1"
 		(shape input)
 		(at 36.83 82.55 0)
@@ -2889,6 +2979,28 @@
 		(uuid "356f19ca-4e0e-4947-a05b-6a3cfac49867")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 44.3509 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "MONOBLOCK_ENABLE"
+		(shape input)
+		(at 115.57 148.59 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "35d6f2d1-40e3-4c11-8151-eba72031eda2")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 138.1495 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3026,6 +3138,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "GND"
+		(shape input)
+		(at 109.22 158.75 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "45e6d3a1-3756-4fde-88b5-d442f8086cd6")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 109.22 165.6057 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -3219,6 +3353,50 @@
 		(uuid "6786e520-d4c4-4924-b5fc-79d180945a47")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 100.8962 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "GND"
+		(shape input)
+		(at 182.88 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "684f9b82-d5d8-4af0-b079-d043776f74e8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 189.7357 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "MONOBLOCK_ENABLE"
+		(shape input)
+		(at 182.88 109.22 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "696c584e-6b42-45f2-ac17-9c58bbbdab39")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 205.4595 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4382,6 +4560,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Conn_01x02_Male")
+		(at 177.8 93.98 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2e47c003-c41f-429f-97c0-d6789dde4622")
+		(property "Reference" "J4"
+			(at 178.435 89.154 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02_Male"
+			(at 178.435 91.694 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical"
+			(at 177.8 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 177.8 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 177.8 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2b2a6253-042f-4b58-bfd6-a0a7f849652f")
+		)
+		(pin "2"
+			(uuid "f1720862-4fe3-4f6f-a863-62c492c32ef9")
+		)
+		(instances
+			(project "Extend"
+				(path "/a750f240-64b5-4a83-bfe7-2cb3a3f58e07"
+					(reference "J4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:Conn_01x04_Pin")
 		(at 31.75 80.01 0)
 		(unit 1)
@@ -4807,6 +5052,76 @@
 			(project "GPIOs"
 				(path "/a750f240-64b5-4a83-bfe7-2cb3a3f58e07"
 					(reference "J8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 109.22 154.94 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "80388311-4d25-41d7-a369-835ceb5e8538")
+		(property "Reference" "R4"
+			(at 111.252 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "4.7K"
+			(at 111.252 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5e6dfe7a-7188-4f08-8a7d-26fa7e69e3db")
+		)
+		(pin "2"
+			(uuid "3ac22dc8-3f48-467f-ba0e-68f4a394d68a")
+		)
+		(instances
+			(project "Extend"
+				(path "/a750f240-64b5-4a83-bfe7-2cb3a3f58e07"
+					(reference "R4")
 					(unit 1)
 				)
 			)
@@ -5563,6 +5878,73 @@
 			(project "GPIOs"
 				(path "/a750f240-64b5-4a83-bfe7-2cb3a3f58e07"
 					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x02_Male")
+		(at 177.8 106.68 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e949bfc4-b51c-42e9-92af-36731516368b")
+		(property "Reference" "J10"
+			(at 178.435 101.854 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02_Male"
+			(at 178.435 104.394 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical"
+			(at 177.8 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 177.8 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 177.8 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ea27346f-b13c-43a7-920f-c6b404d05777")
+		)
+		(pin "2"
+			(uuid "fdb9c583-e909-4938-8fad-9c7999f04c1d")
+		)
+		(instances
+			(project "Extend"
+				(path "/a750f240-64b5-4a83-bfe7-2cb3a3f58e07"
+					(reference "J10")
 					(unit 1)
 				)
 			)

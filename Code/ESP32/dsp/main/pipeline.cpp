@@ -2,15 +2,19 @@
 #include <limits>
 #include <memory.h>
 #include <esp_dsp.h>
+#include "debug.h"
 
-Pipeline::Pipeline() : mSamples( 0 ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
-    mOutput32s( 0 ), mHasAttenuation( false ) {
+Pipeline::Pipeline( Profile *profile ) : mSamples( 0 ), mInputLeft( 0 ), mInputRight( 0 ), mOutputLeft( 0 ), mOutputRight( 0 ), mOutputFloat( 0 ), 
+    mOutput32s( 0 ), mOutput16s( 0 ), mProfile( profile ) {
 
     mAttenuation[ 0 ] = 0;
     mAttenuation[ 1 ] = 0;
     
     mGainFactor[ 0 ] = 1; 
     mGainFactor[ 1 ] = 1; 
+
+    mHasAttenuation[ 0 ] = false;
+    mHasAttenuation[ 1 ] = false;
 }
 
 Pipeline::~Pipeline() {
@@ -19,6 +23,7 @@ Pipeline::~Pipeline() {
 
 void Pipeline::setSamples( uint32_t samples ) {
     deallocate();
+    
     mSamples = samples;
 }
 
@@ -29,7 +34,8 @@ Pipeline::resetAll() {
     mGainFactor[ 0 ] = 1; 
     mGainFactor[ 1 ] = 1; 
 
-    mHasAttenuation = false;
+    mHasAttenuation[ 0 ] = false;
+    mHasAttenuation[ 1 ] = false;
 
     for( Biquads::iterator i = mBiquads[ 0 ].begin(); i != mBiquads[ 0 ].end(); i++ ) {
         Biquad *biquad = (*i);
@@ -48,14 +54,17 @@ Pipeline::resetAll() {
 }
 
 void 
-Pipeline::setAttenuation( float leftLevel, float rightLevel ) {
-    mAttenuation[ 0 ] = leftLevel;
-    mAttenuation[ 1 ] = rightLevel;
-    
-    mGainFactor[ 0 ] = 1.0f/pow( 10, leftLevel/20.0f );
-    mGainFactor[ 1 ] = 1.0f/pow( 10, rightLevel/20.0f );
+Pipeline::setAttenuationLeft( float level ) {
+    mAttenuation[ 0 ] = level;  
+    mGainFactor[ 0 ] = 1.0f/pow( 10, level/20.0f );
+    mHasAttenuation[ 0 ] = true;
+}
 
-    mHasAttenuation = true;
+void 
+Pipeline::setAttenuationRight( float level ) {
+    mAttenuation[ 1 ] = level;  
+    mGainFactor[ 1 ] = 1.0f/pow( 10, level/20.0f );
+    mHasAttenuation[ 1 ] = true;
 }
 
 void 
@@ -102,9 +111,21 @@ Pipeline::convertFloatToInt32( float f ) {
 
     if ( f > max ) {
         return max;
-    } else if ( f < min ) {
+    }
+
+    if ( f < min ) {
         return min;
-    } else return std::round<int32_t>( f );
+    }
+
+    return std::round<int32_t>( f );
+/*
+    int result;
+    asm("ROUND.S %0, %1, 0\t\n"
+        : "=a" (result)
+        : "f" (f));
+
+    return result;
+    */
 }
 
 int16_t 
@@ -114,9 +135,21 @@ Pipeline::convertFloatToInt16( float f ) {
 
     if ( f > max ) {
         return max;
-    } else if ( f < min ) {
+    }
+
+    if ( f < min ) {
         return min;
-    } else return std::round<int16_t>( f );
+    }
+
+    return std::round<int16_t>( f );
+/*
+    int result;
+    asm("ROUND.S %0, %1, 0\t\n"
+        : "=a" (result)
+        : "f" (f));
+
+    return result;
+    */
 }
 
 int16_t *
@@ -125,8 +158,18 @@ Pipeline::process( int16_t *data, uint32_t samples ) {
         samples = mSamples;
     }
 
+    mProfile->startProfiling( "allocate" );
+
     checkAllocateFloat();
     checkAllocateSigned16();
+
+   // AMP_DEBUG_I( "Allocation done" );
+
+    mProfile->stopProfiling( "allocate" );
+
+    mProfile->startProfiling( "deinterleave" );
+
+    //AMP_DEBUG_I( "Converting" );
 
     // convert stereo inputs into two mono channels
     for ( uint32_t i = 0; i < samples; i++ ) {
@@ -134,7 +177,15 @@ Pipeline::process( int16_t *data, uint32_t samples ) {
         mInputRight[ i ] = (float)data[ i*2 + 1 ];
     }
 
+    mProfile->stopProfiling( "deinterleave" );
+
+    //AMP_DEBUG_I( "Processing" );
+
     process( samples );
+
+    mProfile->startProfiling( "output" );
+
+    //AMP_DEBUG_I( "Converting back" );
 
     // convert two mono channels into one stereo channel for output
     for ( uint32_t i = 0; i < samples; i++ ) {
@@ -142,7 +193,48 @@ Pipeline::process( int16_t *data, uint32_t samples ) {
         mOutput16s[ i*2 + 1 ] = convertFloatToInt16( mOutputRight[ i ] );
     }
 
+     mProfile->stopProfiling( "output" );
+
     return mOutput16s;
+}
+
+
+int32_t * 
+Pipeline::process( int32_t *data, uint32_t samples ) {
+    if ( samples == 0 ) {
+        samples = mSamples;
+    }
+
+    mProfile->startProfiling( "allocate" );
+
+    checkAllocateFloat();
+    checkAllocateSigned32();
+
+    mProfile->stopProfiling( "allocate" );
+
+    mProfile->startProfiling( "deinterleave" );
+
+    // convert stereo inputs into two mono channels
+    for ( uint32_t i = 0; i < samples; i++ ) {
+        mInputLeft[ i ] = (float)data[ i*2 ];
+        mInputRight[ i ] = (float)data[ i*2 + 1 ];
+    }
+
+    mProfile->stopProfiling( "deinterleave" );
+
+    process( samples );
+
+    mProfile->startProfiling( "output" );
+
+    // convert two mono channels into one stereo channel for output
+    for ( uint32_t i = 0; i < samples; i++ ) {
+        mOutput32s[ i*2 ] = convertFloatToInt32( mOutputLeft[ i ] );
+        mOutput32s[ i*2 + 1 ] = convertFloatToInt32( mOutputRight[ i ] );
+    }
+
+    mProfile->stopProfiling( "output" );
+
+    return mOutput32s;
 }
 
 float * 
@@ -151,7 +243,13 @@ Pipeline::process( float *data, uint32_t samples ) {
         samples = mSamples;
     }
 
+    mProfile->startProfiling( "allocate" );
+
     checkAllocateFloat();
+
+    mProfile->stopProfiling( "allocate" );
+
+    mProfile->startProfiling( "deinterleave" );
 
     // convert stereo inputs into two mono channels
     for ( uint32_t i = 0; i < samples; i++ ) {
@@ -159,7 +257,11 @@ Pipeline::process( float *data, uint32_t samples ) {
         mInputRight[ i ] = data[ i*2 + 1 ];
     }
 
+    mProfile->stopProfiling( "deinterleave" );
+
     process( samples );
+
+    mProfile->startProfiling( "output" );
 
     // convert two mono channels into one stereo channel for output
     for ( uint32_t i = 0; i < samples; i++ ) {
@@ -167,60 +269,77 @@ Pipeline::process( float *data, uint32_t samples ) {
         mOutputFloat[ i*2 + 1 ] = mOutputRight[ i ];
     }
 
+    mProfile->stopProfiling( "output" );
+
     return mOutputFloat;
-}
-
-int32_t * 
-Pipeline::process( int32_t *data, uint32_t samples ) {
-    if ( samples == 0 ) {
-        samples = mSamples;
-    }
-
-    checkAllocateFloat();
-    checkAllocateSigned32();
-
-    // convert stereo inputs into two mono channels
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mInputLeft[ i ] = (float)data[ i*2 ];
-        mInputRight[ i ] = (float)data[ i*2 + 1 ];
-    }
-
-    process( samples );
-
-    // convert two mono channels into one stereo channel for output
-    for ( uint32_t i = 0; i < samples; i++ ) {
-        mOutput32s[ i*2 ] = convertFloatToInt32( mOutputLeft[ i ] );
-        mOutput32s[ i*2 + 1 ] = convertFloatToInt32( mOutputRight[ i ] );
-    }
-
-    return mOutput32s;
 }
 
 void 
 Pipeline::process( uint32_t samples ) {
+    bool first = true;
     for( Biquads::iterator i = mBiquads[ 0 ].begin(); i != mBiquads[ 0 ].end(); i++ ) {
-        dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+       // dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        mProfile->startProfiling( "biquadleft" );
 
+        if ( first ) {
+            dsps_biquad_f32_ae32( mInputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+            first = false;
+        } else {
+            dsps_biquad_f32_ae32( mOutputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        }
+
+        mProfile->stopProfiling( "biquadleft" );
+
+        /*
+        mProfile->startProfiling( "biquadleftcopy" );       
         if ( i != mBiquads[ 0 ].end() ) {
             memcpy( mInputLeft, mOutputLeft, sizeof( float ) * samples );
         }
+        mProfile->stopProfiling( "biquadleftcopy" );   
+        */ 
     }
 
+    first = true;
     for( Biquads::iterator i = mBiquads[ 1 ].begin(); i != mBiquads[ 1 ].end(); i++ ) {
-        dsps_biquad_f32_aes3( mInputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        mProfile->startProfiling( "biquadright" );
+       // dsps_biquad_f32_aes3( mInputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        if ( first ) {
+            dsps_biquad_f32_ae32( mInputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+            first = false;
+        } else {
+            dsps_biquad_f32_ae32( mOutputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        }
 
+        mProfile->stopProfiling( "biquadright" );
+
+        /*
+        mProfile->startProfiling( "biquadrightcopy" );
         if ( i != mBiquads[ 1 ].end() ) {
             memcpy( mInputRight, mOutputRight, sizeof( float ) * samples );
         }
+        mProfile->stopProfiling( "biquadrightcopy" );
+        */
     }
 
-    if ( mHasAttenuation ) {
-        memcpy( mInputLeft, mOutputLeft, sizeof( float ) * samples );  
-        memcpy( mInputRight, mOutputRight, sizeof( float ) * samples );
+    mProfile->startProfiling( "attenuate" );
 
-        dsps_mulc_f32_ae32( mInputLeft, mOutputLeft, samples, mGainFactor[ 0 ], 1, 1 );
-        dsps_mulc_f32_ae32( mInputRight, mOutputRight, samples, mGainFactor[ 1 ], 1, 1 );
+    if ( mHasAttenuation[ 0 ] ) {
+        if ( mBiquads[ 0 ].size() ) {
+            dsps_mulc_f32_ae32( mOutputLeft, mOutputLeft, samples, mGainFactor[ 0 ], 1, 1 );
+        } else {
+            dsps_mulc_f32_ae32( mInputLeft, mOutputLeft, samples, mGainFactor[ 0 ], 1, 1 );
+        }
     }
+
+    if ( mHasAttenuation[ 1 ] ) {
+        if ( mBiquads[ 1 ].size() ) {
+            dsps_mulc_f32_ae32( mOutputRight, mOutputRight, samples, mGainFactor[ 1 ], 1, 1 );
+        } else {
+            dsps_mulc_f32_ae32( mInputRight, mOutputRight, samples, mGainFactor[ 1 ], 1, 1 );
+        }
+    }
+
+    mProfile->stopProfiling( "attenuate" );
 }
 
 void 

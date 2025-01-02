@@ -31,7 +31,6 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_event/libesp_event.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/nvs_flash/libnvs_flash.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_phy/libesp_phy.a
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_vfs_console/libesp_vfs_console.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/vfs/libvfs.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/lwip/liblwip.a
@@ -49,8 +48,9 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/sdmmc/libsdmmc.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_sdio/libesp_driver_sdio.a
+/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_dac/libesp_driver_dac.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_rmt/libesp_driver_rmt.a
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_tsens/libesp_driver_tsens.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_sdm/libesp_driver_sdm.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_i2c/libesp_driver_i2c.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_ledc/libesp_driver_ledc.a
@@ -59,7 +59,6 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp-tls/libesp-tls.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_adc/libesp_adc.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_cam/libesp_driver_cam.a
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_driver_touch_sens/libesp_driver_touch_sens.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_eth/libesp_eth.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_gdbstub/libesp_gdbstub.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/esp_hid/libesp_hid.a
@@ -81,8 +80,6 @@
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/perfmon/libperfmon.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/rt/librt.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/spiffs/libspiffs.a
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/touch_element/libtouch_element.a
-/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/usb/libusb.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/espressif__esp-dsp/libespressif__esp-dsp.a
 /Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/main/libmain.a

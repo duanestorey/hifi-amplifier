@@ -28,6 +28,7 @@ class Biquad {
         void resetDelayLine();
     private:
         void actualGenerate( uint8_t filterType, float cutoff, float Q, float gain = 0 );
+        void generatePeaking( float cutoff, float Q, float gain );
     protected:
         uint8_t mFilterType;
         float mCutoffFreq;

@@ -3,12 +3,13 @@
 
 #include "biquad.h"
 #include <vector>
+#include "profile.h"
 
 typedef std::vector<Biquad *> Biquads;
 
 class Pipeline {
     public:
-        Pipeline();
+        Pipeline( Profile *profile );
         ~Pipeline();
 
         void addBiquadLeft( Biquad *biquad );
@@ -18,12 +19,18 @@ class Pipeline {
         int16_t *process( int16_t *data, uint32_t samples = 0 );
         int32_t *process( int32_t *data, uint32_t samples = 0 );
 
-        void setAttenuation( float leftLevel, float rightLevel );
         void resetAll();
         void destroy();
 
         void generate( uint32_t samplingRate );
         void setSamples( uint32_t samples );
+        uint8_t getBiquadCount() const { return mBiquads[0].size() + mBiquads[1].size(); }
+
+        int32_t convertFloatToInt32( float f );
+        int16_t convertFloatToInt16( float f );
+
+        void setAttenuationLeft( float level );
+        void setAttenuationRight( float level );
     protected:
         uint32_t mSamples;
         float *mInputLeft;
@@ -38,7 +45,9 @@ class Pipeline {
         Biquads mBiquads[ 2 ];
         float mAttenuation[ 2 ];
         float mGainFactor[ 2 ];
-        bool mHasAttenuation;
+        bool mHasAttenuation[ 2 ];
+
+        Profile *mProfile;
     private:
         void process( uint32_t samples );
 
@@ -47,10 +56,6 @@ class Pipeline {
         void checkAllocateSigned16();
 
         void deallocate();
-
-
-        inline int32_t convertFloatToInt32( float f );
-        inline int16_t convertFloatToInt16( float f );
 };
 
 #endif

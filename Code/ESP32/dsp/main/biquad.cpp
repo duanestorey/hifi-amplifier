@@ -1,6 +1,7 @@
 #include "biquad.h"
 #include <memory.h>
 #include <esp_dsp.h>
+#include "debug.h"
 
 Biquad::Biquad( uint8_t filterType, float cutoffFreq, float Q, float gain ) : mFilterType( filterType ), mCutoffFreq( cutoffFreq ), mQ( Q ), mGain( gain ) {
     resetAll();
@@ -11,6 +12,9 @@ Biquad::generate( uint32_t samplingRate ) {
     float cutoff = mCutoffFreq / samplingRate;
 
     actualGenerate( mFilterType, cutoff, mQ, mGain );
+    resetDelayLine();
+
+    AMP_DEBUG_I( "Generated biquad with coefficients %0.10f, %0.10f, %0.10f, %0.10f, %0.10f", mCoeffs[0], mCoeffs[1], mCoeffs[2], mCoeffs[3], mCoeffs[4]);
 }
 
 void 
@@ -36,6 +40,22 @@ Biquad::getDelayLine() {
 }
 
 void 
+Biquad::generatePeaking( float cutoff, float Q, float gain ) {
+    float omega = 2*M_PI*cutoff;
+    float alpha = sin( omega ) / ( 2*Q );
+    float A = sqrt( pow( (float)10.0, gain/(float)20.0 ) );
+
+    float a0 = 1 + alpha/A;
+
+    mCoeffs[0] = (1 + A*alpha)/a0;
+    mCoeffs[1] = (-2*cos( omega ))/a0;
+    mCoeffs[2] = (1 - A*alpha)/a0;
+
+    mCoeffs[3] = (-2*cos( omega ))/a0;
+    mCoeffs[4] = (1 - alpha/A)/a0;
+}
+
+void 
 Biquad::actualGenerate( uint8_t filterType, float cutoff, float Q, float gain ) {
     switch( filterType ) {
         case LOWPASS:
@@ -57,7 +77,7 @@ Biquad::actualGenerate( uint8_t filterType, float cutoff, float Q, float gain ) 
             dsps_biquad_gen_allpass180_f32( mCoeffs, cutoff, Q );
             break;
         case PEAKING:
-            dsps_biquad_gen_peakingEQ_f32( mCoeffs, cutoff, Q );
+            generatePeaking( cutoff, Q, gain );
             break;
         case LOWSHELF:
             dsps_biquad_gen_lowShelf_f32( mCoeffs, cutoff, gain, Q );

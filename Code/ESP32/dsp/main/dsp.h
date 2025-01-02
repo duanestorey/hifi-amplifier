@@ -9,6 +9,8 @@
 #include "i2c-listener.h"
 #include "i2s.h"
 #include "pipeline.h"
+#include "timer.h"
+#include "profile.h"
 
 class DSP : public I2C_Listener {
     public:
@@ -18,7 +20,8 @@ class DSP : public I2C_Listener {
             REGISTER_SET_FREQ_DEPTH = 3,
             REGISTER_ADD_FILTER = 4,
             REGISTER_START = 10,
-            REGISTER_VERSION = 255
+            REGISTER_VERSION = 100,
+            REGISTER_CPU = 101
         };
 
         enum {
@@ -33,6 +36,7 @@ class DSP : public I2C_Listener {
 
         void handleAudioThread();
         void handleGeneralThread();
+        void handleTimerThread();
         void fullReset();
     protected:
         virtual void onNewI2CData( uint8_t reg, uint8_t *buffer, uint8_t dataSize );
@@ -40,7 +44,6 @@ class DSP : public I2C_Listener {
         uint32_t mSamplingRate;
         uint32_t mSamplesPerPayload;
         uint32_t mBytesPerPayload;
-        uint8_t *mBuffer;
 
         uint8_t mBitDepth;
         uint8_t mSlotDepth;
@@ -50,9 +53,13 @@ class DSP : public I2C_Listener {
         Queue mAudioQueue;
         I2CBUS *mI2C;
         I2S *mI2S;
+        Timer *mTimer;
+        Profile *mProfile;
         Pipeline *mPipeline;
 
         volatile bool mAudioStarted;
+        uint32_t mTimerID;
+        uint8_t mCpuUsage;
     private:
         uint8_t getI2CAddress();
         uint8_t sizePerSample();

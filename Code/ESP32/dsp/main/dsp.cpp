@@ -1,8 +1,13 @@
 #include "dsp.h"
 #include "debug.h"
+#include "timer.h"
+#include <memory.h>
 
-DSP::DSP() : mSamplingRate( 48000 ), mSamplesPerPayload( 0 ), mBytesPerPayload( 0 ), mBuffer( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), mMode( MODE_BYPASS ), mI2C( 0 ), mI2S( 0 ), mAudioStarted( false ) {
+DSP::DSP() : mSamplingRate( 48000 ), mSamplesPerPayload( 0 ), mBytesPerPayload( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), 
+    mMode( MODE_BYPASS ), mI2C( 0 ), mI2S( 0 ), mTimer( 0 ), mProfile( 0 ), mAudioStarted( false ), mTimerID( 0 ), mCpuUsage( 0 ) {
 
+    mTimer = new Timer();
+    mProfile = new Profile();
 }
 
 DSP::~DSP() {
@@ -19,6 +24,13 @@ void
 startGeneralThread( void *param ) {
     // Proxy thread start to main radio thread
     ((DSP *)param)->handleGeneralThread();
+}
+
+
+void
+startTimerThread( void *param ) {
+    // Proxy thread start to main radio thread
+    ((DSP *)param)->handleTimerThread();
 }
 
 void 
@@ -39,32 +51,38 @@ DSP::fullReset() {
 void
 DSP::start() {
     xTaskCreate(
+        startGeneralThread,
+        "General Thread",
+        4096,
+        (void *)this,
+        1,
+        NULL
+    );
+
+    xTaskCreate(
         startAudioThread,
         "Audio Thread",
-        1000,
+        4096,
         (void *)this,
         2,
         NULL
     );   
 
-    xTaskCreate(
-        startGeneralThread,
-        "General Thread",
-        1000,
-        (void *)this,
-        1,
-        NULL
-    );
+    while ( true ) {
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
+    }
+
 }
 
 uint8_t 
 DSP::sizePerSample() {
-    switch( mBitDepth ) {
+    switch( mSlotDepth ) {
         case 16:
-            return 2;
-        case 24:
-        case 32:
             return 4;
+        case 24:
+            return 6;
+        case 32:
+            return 8;
         default:
             return 0;
     }
@@ -125,40 +143,114 @@ DSP::processAudio() {
 }
 
 void 
+DSP::handleTimerThread() {
+    AMP_DEBUG_I( "Starting timer thread" );
+    while( true ) {
+        mTimer->processTick();
+
+        vTaskDelay( 10 / portTICK_PERIOD_MS );
+    }     
+}
+
+void 
 DSP::handleAudioThread() {
     AMP_DEBUG_I( "Starting audio thread" );
     Message msg;
 
-    mI2S = new I2S( mAudioQueue );
+    AMP_DEBUG_I( "Setting up I2S" );
+   // mI2S = new I2S( mAudioQueue );
 
-    mPipeline = new Pipeline();
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 2000, 0.707 ) );
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 2000, 0.707 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 2000, 0.5 ) );
+    AMP_DEBUG_I( "Setting up pipeline" );
+    mPipeline = new Pipeline( mProfile );
 
-    while ( mAudioQueue.waitForMessage( msg, 5 ) ) {
-        switch( msg.mMessageType ) {
-            case Message::MSG_I2S_RECV:
-                processAudio();
-                break;
-            case Message::MSG_AUDIO_START:
-                startAudio();
-                break;
-            case Message::MSG_AUDIO_STOP:
-                stopAudio();
-                break;
-            case Message::MSG_AUDIO_ADD_FILTER_LEFT:
-                mPipeline->addBiquadLeft( (Biquad *)msg.mParam );
-                break;
-            case Message::MSG_AUDIO_ADD_FILTER_RIGHT:
-                mPipeline->addBiquadRight( (Biquad *)msg.mParam );
-                break;
-            case Message::MSG_AUDIO_FULL_RESET:
-                fullReset();
-                break;
-            default:
-                break;
+    mSamplingRate = 48000;
+    uint32_t packetSamples = mSamplingRate/100;
+
+    mPipeline->setSamples( packetSamples );
+    int32_t *buffer = (int32_t *)aligned_alloc( 2 * sizeof( int32_t ), 2 * sizeof( int32_t ) * packetSamples );
+    memset( buffer, 0xf0,  2 * sizeof( int32_t ) * packetSamples );
+
+    AMP_DEBUG_I( "Setting up timer" );
+    mTimerID = mTimer->setTimer( 1000, mAudioQueue, true );
+
+    AMP_DEBUG_I( "Adding Biquad filters" );
+
+    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 2404, 6.026, 2.20 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 2404, 6.026, 2.20 ) );
+
+    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 2979, 3.142, 4.70  ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 2979, 3.142, 4.70  ) );
+
+    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 4798, 6.476, 2.10 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 4798, 6.476, 2.10 ) );
+
+    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 5679, 2.244, -1.60 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 5679, 2.244, -1.60 ) );
+
+    mPipeline->addBiquadLeft( new Biquad( Biquad::PEAKING, 12358, 1.426, -2.70 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::PEAKING, 12358, 1.426, -2.70 ) );
+    
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1500, 0.707 ) );
+    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1500, 0.707 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1500, 0.707 ) );
+    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1500, 0.707 ) );
+
+
+    
+    // drop tweeter
+    mPipeline->setAttenuationRight( 3 );
+
+    mPipeline->generate( mSamplingRate );
+
+    AMP_DEBUG_I( "Waiting for messages on Audio Thread" );
+
+    while ( true ) {
+        while ( mAudioQueue.waitForMessage( msg, 10 ) ) {
+            switch( msg.mMessageType ) {
+                case Message::MSG_I2S_RECV:
+                    processAudio();
+                    break;
+                case Message::MSG_AUDIO_START:
+                    startAudio();
+                    break;
+                case Message::MSG_AUDIO_STOP:
+                    stopAudio();
+                    break;
+                case Message::MSG_AUDIO_ADD_FILTER_LEFT:
+                    mPipeline->addBiquadLeft( (Biquad *)msg.mParam );
+                    break;
+                case Message::MSG_AUDIO_ADD_FILTER_RIGHT:
+                    mPipeline->addBiquadRight( (Biquad *)msg.mParam );
+                    break;
+                case Message::MSG_AUDIO_FULL_RESET:
+                    fullReset();
+                    break;
+                case Message::MSG_TIMER:   
+                    AMP_DEBUG_I( "Timer message received" );
+                    mProfile->reset();
+
+                    for ( int i = 0; i < 100; i++ ) {
+                        mPipeline->process( buffer );
+                    }
+
+                    {
+                        uint32_t totalCycles = mProfile->getTotalCyles();
+                        mCpuUsage = round( 255*totalCycles/1000000.0f );
+                        AMP_DEBUG_I( "Processed 1 second of audio in %lu microseconds", totalCycles );
+                        AMP_DEBUG_I( "Processing %d biquads at %lu Hz, CPU usage roughly: %0.2f%%, %d", mPipeline->getBiquadCount(), mSamplingRate, totalCycles/10000.0f, mCpuUsage );
+                        
+                    }
+
+                    mProfile->dump();
+
+                  //  mProfile->tick();
+                    break;
+                default:
+                    break;
+            }
         }
+
+        mTimer->processTick();
     }
 }
 
@@ -167,15 +259,19 @@ DSP::handleGeneralThread() {
     AMP_DEBUG_I( "Starting general thread" );
     Message msg;
 
-    mI2C = new I2CBUS( getI2CAddress(), mGeneralQueue );
+    AMP_DEBUG_I( "Starting up I2C" );
+   // mI2C = new I2CBUS( getI2CAddress(), mGeneralQueue );
     
-    while ( mGeneralQueue.waitForMessage( msg, 5 ) ) {
-        switch( msg.mMessageType ) {
-            case Message::MSG_I2C:
-                mI2C->processData();
-                break;
-            default:
-                break;
+    AMP_DEBUG_I( "Waiting for messages on General Thread" );
+    while ( true ) {
+        while ( mGeneralQueue.waitForMessage( msg, 5 ) ) {
+            switch( msg.mMessageType ) {
+                case Message::MSG_I2C:
+                    mI2C->processData();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -183,24 +279,28 @@ DSP::handleGeneralThread() {
 void 
 DSP::startAudio() {
     mSamplesPerPayload = ( mSamplingRate * DSP_I2S_PACKET_SIZE_MS ) / 1000;
-    mBytesPerPayload = 2 * sizePerSample() * mSamplesPerPayload;
+    mBytesPerPayload = sizePerSample() * mSamplesPerPayload;
 
+    // set the size of the pipeline, in samples but representing DSP_I2S_PACKET_SIZE_MS milliseconds
     mPipeline->setSamples( mSamplesPerPayload );
 
-    mBuffer = (uint8_t *)aligned_alloc( sizePerSample(), sizePerSample() * 2 * mSamplesPerPayload );
+    // generate filter coefficients, which change based on the sampling rate
+    // will need to regenerate this when the sampling rate changes
+    mPipeline->generate( mSamplingRate );
+   // mI2S->start( mSamplingRate, mBitDepth, mSlotDepth );
 
-    mI2S->start( mSamplingRate, mBitDepth, mSlotDepth );
+    mTimerID = mTimer->setTimer( 1000, mAudioQueue, true );
 }
 
 void 
 DSP::stopAudio() {
-    mI2S->stop();
-    mPipeline->destroy();
-
-    if ( mBuffer ) {
-        free( mBuffer );
-        mBuffer = 0;
+    if ( mTimerID ) { 
+        mTimer->cancelTimer( mTimerID );
+        mTimerID = 0;
     }
+
+  //  mI2S->stop();
+    mPipeline->destroy();
 }
 
 void 
@@ -325,6 +425,8 @@ DSP::onNewI2CData( uint8_t reg, uint8_t *buffer, uint8_t dataSize ) {
                 }
             }
  
+            break;
+        case REGISTER_CPU:
             break;
         case REGISTER_VERSION:
             break;
