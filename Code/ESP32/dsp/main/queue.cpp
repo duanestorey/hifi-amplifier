@@ -1,10 +1,12 @@
 #include "queue.h"
+#include "debug.h"
 
-Queue::Queue(  uint8_t queueSize ) {
+Queue::Queue( uint8_t queueSize ) {
     mQueueHandle = xQueueCreate( queueSize, sizeof( Message ) );
 }
 
 Queue::~Queue() {
+    AMP_DEBUG_I( "Deleting queue handle" );
     vQueueDelete( mQueueHandle );
 }
 

@@ -78,6 +78,7 @@ Timer::processTick() {
     for ( TimerList::iterator i = mDispatchList.begin(); i != mDispatchList.end(); i++ ) {
         TimerInfo &timerInfo = *i;
 
+        AMP_DEBUG_I( "Dispatching timer message" );
         timerInfo.mQueue->add( Message::MSG_TIMER, timerInfo.mEventID );
     }
 

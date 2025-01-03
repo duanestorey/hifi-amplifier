@@ -3,6 +3,8 @@
 
 #include "driver/gpio.h"
 
+#define DSP_DATA_ALIGN          4
+
 #define DSP_VERSION_MAJOR		1
 #define DSP_VERSION_MINOR		0		
 
@@ -10,7 +12,7 @@
 #define DSP_I2C_BASE_ADDR		0b1010000
 
 #define DSP_I2S_PACKET_SIZE_MS	10
-#define DSP_I2S_PRELOAD_SIZE_MS	20
+#define DSP_I2S_PRELOAD_SIZE_MS	5
 #define DSP_I2S_MAX_TIMEOUT		50
 
 #define DSP_PIN_SDA				(gpio_num_t)5

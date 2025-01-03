@@ -46,7 +46,6 @@ extern "C"
 esp_err_t dsps_biquad_f32_ansi(const float *input, float *output, int len, float *coef, float *w);
 esp_err_t dsps_biquad_f32_ae32(const float *input, float *output, int len, float *coef, float *w);
 esp_err_t dsps_biquad_f32_aes3(const float *input, float *output, int len, float *coef, float *w);
-esp_err_t dsps_biquad_f32_skip_ae32(const float *input, float *output, int len, float *coef, float *w);
 esp_err_t dsps_biquad_f32_arp4(const float *input, float *output, int len, float *coef, float *w);
 /**@}*/
 

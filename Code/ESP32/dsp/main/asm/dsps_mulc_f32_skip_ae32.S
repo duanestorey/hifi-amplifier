@@ -38,8 +38,8 @@ dsps_mulc_f32_skip_ae32:
 
     entry	a1, 16
     
-    slli 	a6, a6, 2  	// a6 - step_in<<2
-    slli 	a7, a7, 2  	// a7 - step_out<<2
+    slli 	a6, a6, 3  	// a6 - step_in<<2
+    slli 	a7, a7, 3  	// a7 - step_out<<2
     wfr		f0, a5		// a5 - load to the f0
 
     loopnez a4, loop_end_mulc_f32_ae32
@@ -47,7 +47,7 @@ dsps_mulc_f32_skip_ae32:
 
         mul.s    f2, f1, f0     // f2 = f1 * f0
         add.n    a2, a2, a6     // input1_ptr+=step_in;
-        ssi	     f2, a3, 0
+        ssi	 f2, a3, 0
         add.n    a3, a3, a7     // output+=step_out;
 loop_end_mulc_f32_ae32:
 

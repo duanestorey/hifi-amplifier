@@ -3,7 +3,7 @@
 #include "timer.h"
 #include <memory.h>
 
-DSP::DSP() : mSamplingRate( 48000 ), mSamplesPerPayload( 0 ), mBytesPerPayload( 0 ), mBitDepth( 16 ), mSlotDepth( 16 ), 
+DSP::DSP() : mSamplingRate( 48000 ), mSamplesPerPayload( 0 ), mBytesPerPayload( 0 ), mBitDepth( 32 ), mSlotDepth( 32 ), 
     mMode( MODE_BYPASS ), mI2C( 0 ), mI2S( 0 ), mTimer( 0 ), mProfile( 0 ), mAudioStarted( false ), mTimerID( 0 ), mCpuUsage( 0 ) {
 
     mTimer = new Timer();
@@ -53,7 +53,7 @@ DSP::start() {
     xTaskCreate(
         startGeneralThread,
         "General Thread",
-        4096,
+        8192,
         (void *)this,
         1,
         NULL
@@ -62,16 +62,15 @@ DSP::start() {
     xTaskCreate(
         startAudioThread,
         "Audio Thread",
-        4096,
+        8192,
         (void *)this,
-        1,
+        2,
         NULL
     );   
 
     while ( true ) {
         vTaskDelay( 10 / portTICK_PERIOD_MS );
     }
-
 }
 
 uint8_t 
@@ -104,6 +103,7 @@ DSP::writeSplitData( uint8_t *bufferPtr1, uint32_t writeSize1, uint8_t *bufferPt
 
 void
 DSP::processAudio() {
+    AMP_DEBUG_I( "Processing audio" );
     while ( mI2S->bytesWaiting() >= mBytesPerPayload ) {
         size_t receivedSize1 = 0;
         size_t receivedSize2 = 0;
@@ -157,19 +157,14 @@ DSP::handleAudioThread() {
     AMP_DEBUG_I( "Starting audio thread" );
     Message msg;
 
-    AMP_DEBUG_I( "Setting up I2S" );
-   // mI2S = new I2S( mAudioQueue );
-
     AMP_DEBUG_I( "Setting up pipeline" );
     mPipeline = new Pipeline( mProfile );
 
     mSamplingRate = 48000;
     uint32_t packetSamples = mSamplingRate/100;
-
-    mPipeline->setSamples( packetSamples );
     int32_t *buffer = (int32_t *)aligned_alloc( 2 * sizeof( int32_t ), 2 * sizeof( int32_t ) * packetSamples );
     for ( int i = 0 ; i < packetSamples; i++ ) {
-        buffer[i*2] = 1000 + ( rand() % 10 ) - 5;
+        buffer[i*2] = 1000 + ( rand() % 100 ) - 49;
         buffer[i*2+1] =  buffer[i*2];
     }
 
@@ -177,25 +172,76 @@ DSP::handleAudioThread() {
     mTimerID = mTimer->setTimer( 1000, mAudioQueue, true );
 
     AMP_DEBUG_I( "Adding Biquad filters" );
-    
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1200, 0.707 ) );
-    mPipeline->addBiquadLeft( new Biquad( Biquad::LOWPASS, 1200, 0.707 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1200, 0.707 ) );
-    mPipeline->addBiquadRight( new Biquad( Biquad::HIGHPASS, 1200, 0.707 ) );
+
+    mPipeline->addBiquad( Pipeline::CHANNEL_LEFT, new Biquad( Biquad::LOWPASS, 60, 0.70711 ) );
+    mPipeline->addBiquad( Pipeline::CHANNEL_RIGHT, new Biquad( Biquad::HIGHPASS, 60, 0.70711 ) );
+
+    mPipeline->setSource( Pipeline::CHANNEL_LEFT, Pipeline::SOURCE_LEFT );
+    mPipeline->setSource( Pipeline::CHANNEL_RIGHT, Pipeline::SOURCE_RIGHT );
     
     // drop tweeter
- //   mPipeline->setAttenuationLeft( 3 );
- //   mPipeline->setAttenuationRight( 3 );
+    // mPipeline->setAttenuation( Pipeline::CHANNEL_LEFT, 3 );
+    // mPipeline->setAttenuation( Pipeline::CHANNEL_RIGHT, 3 );
+   // mPipeline->setAttenuationRight( 3 );
 
     mPipeline->generate( mSamplingRate );
 
+    AMP_DEBUG_I( "Setting up I2S" );
+    mI2S = new I2S( mAudioQueue );
+  //  mI2S->start( mSamplingRate, mBitDepth, mSlotDepth );
+
     AMP_DEBUG_I( "Waiting for messages on Audio Thread" );
+    uint32_t count = 0;
 
     while ( true ) {
-        while ( mAudioQueue.waitForMessage( msg, 50 ) ) {
+        while ( mAudioQueue.waitForMessage( msg, 5 ) ) {
             switch( msg.mMessageType ) {
                 case Message::MSG_I2S_RECV:
-                    processAudio();
+                    { 
+                        //AMP_DEBUG_I( "I2S message received %lu", msg.mParam2 );
+                        int32_t *outBuf = 0;
+                        int32_t *inBuf = (int32_t *)msg.mParam;
+                        int32_t samples = msg.mParam2/(2*sizeof( int32_t ) );
+
+                        outBuf = mPipeline->process( inBuf, samples );
+                        size_t outSize = 0;
+                        mI2S->writeData( (uint8_t *)outBuf, msg.mParam2, outSize );
+                        count++;
+
+                        
+                        if ( count % 400 == 0 ) 
+                        {
+                        
+                            AMP_DEBUG_I( "Received %lu bytes", msg.mParam2 );
+                            /*
+                            
+                            std::stringstream s;
+
+                             for ( int i = 0 ; i < samples*2; i++ ) {
+                                s << ( inBuf[ i ] >> 16) << " ";
+                            }
+
+                            AMP_DEBUG_I( "Actual input data - %s\n\n", s.str().c_str() );
+
+                             s.str( "" );
+                            
+                            for ( int i = 0 ; i < samples; i++ ) {
+                                s << ( outBuf[ 2*i ] >> 16 ) << " ";
+                            }
+
+                            AMP_DEBUG_I( "Filtered woofer data - %s\n\n", s.str().c_str() );
+                            
+                            s.str( "" );
+                            
+                            for ( int i = 0 ; i < samples; i++ ) {
+                                s << ( outBuf[ 2*i + 1] >> 16 ) << " ";
+                            }
+
+                            AMP_DEBUG_I( "Filtered tweeter data - %s\n\n", s.str().c_str() );
+                            */
+                        }
+                    }
+                   // processAudio();
                     break;
                 case Message::MSG_AUDIO_START:
                     startAudio();
@@ -214,12 +260,13 @@ DSP::handleAudioThread() {
                     break;
                 case Message::MSG_TIMER:   
                 {
+                    
                     AMP_DEBUG_I( "Timer message received" );
                     mProfile->reset();
 
                     int32_t *outBuf = 0;
                     for ( int i = 0; i < 100; i++ ) {
-                        outBuf = mPipeline->process( buffer );
+                        outBuf = mPipeline->process( (int32_t *)buffer, packetSamples );
                     }
 
                     {
@@ -231,7 +278,6 @@ DSP::handleAudioThread() {
                     }
 
                     {
-                    
                         std::stringstream s;
                         
                         for ( int i = 0 ; i < packetSamples; i++ ) {
@@ -250,6 +296,7 @@ DSP::handleAudioThread() {
                     }
 
                     mProfile->dump();
+                    
 
                   //  mProfile->tick();
                 }
@@ -269,7 +316,7 @@ DSP::handleGeneralThread() {
     Message msg;
 
     AMP_DEBUG_I( "Starting up I2C" );
-   // mI2C = new I2CBUS( getI2CAddress(), mGeneralQueue );
+    mI2C = new I2CBUS( getI2CAddress(), mGeneralQueue );
     
     AMP_DEBUG_I( "Waiting for messages on General Thread" );
     while ( true ) {
@@ -291,12 +338,12 @@ DSP::startAudio() {
     mBytesPerPayload = sizePerSample() * mSamplesPerPayload;
 
     // set the size of the pipeline, in samples but representing DSP_I2S_PACKET_SIZE_MS milliseconds
-    mPipeline->setSamples( mSamplesPerPayload );
+   // mPipeline->setSamples( mSamplesPerPayload );
 
     // generate filter coefficients, which change based on the sampling rate
     // will need to regenerate this when the sampling rate changes
     mPipeline->generate( mSamplingRate );
-   // mI2S->start( mSamplingRate, mBitDepth, mSlotDepth );
+  //  mI2S->start( mSamplingRate, mBitDepth, mSlotDepth );
 
     mTimerID = mTimer->setTimer( 1000, mAudioQueue, true );
 }
@@ -339,12 +386,28 @@ DSP::onNewI2CData( uint8_t reg, uint8_t *buffer, uint8_t dataSize ) {
                 switch( outputFormat ) {
                     case 0:
                         // left and right processed individually, default
+                        mPipeline->setLeftSource( Pipeline::SOURCE_LEFT );
+                        mPipeline->setLeftSource( Pipeline::SOURCE_RIGHT );
                         break;
                     case 1:
-                        // left and right combined, in left channel, no attenuation
+                        // both output channels have the left channel as source
+                        mPipeline->setLeftSource( Pipeline::SOURCE_LEFT );
+                        mPipeline->setLeftSource( Pipeline::SOURCE_LEFT );
                         break;
                     case 2:
+                        // both output channels have the right channel as source
+                        mPipeline->setLeftSource( Pipeline::SOURCE_RIGHT );
+                        mPipeline->setLeftSource( Pipeline::SOURCE_RIGHT );
+                        break;
+                    case 8:
+                        // left and right combined, in left channel, no attenuation
+                        mPipeline->setLeftSource( Pipeline::SOURCE_COMBINED );
+                        mPipeline->setLeftSource( Pipeline::SOURCE_COMBINED );
+                        break;
+                    case 9:
                         // left and right combined, in left channel, 6db decrease
+                        mPipeline->setLeftSource( Pipeline::SOURCE_COMBINED_6DB );
+                        mPipeline->setLeftSource( Pipeline::SOURCE_COMBINED_6DB );
                         break;
                 }
             }

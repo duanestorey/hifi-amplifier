@@ -14,6 +14,7 @@ idf_component_register(SRCS
     "circ-buffer.cpp" 
     "profile.cpp"
     "asm/dsps_biquad_f32_skip_aes3.S"
-    "asm/dsps_mulc_f32_skip_ae32.S"
+    "asm/dsps_to_float.S"
+    
     INCLUDE_DIRS "."
 )

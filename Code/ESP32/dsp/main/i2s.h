@@ -7,7 +7,7 @@
 
 class I2S {
     public:
-        I2S( Queue queue );
+        I2S( Queue &queue );
         void start( uint32_t samplingRate, uint8_t bitDepth, uint8_t slotDepth );
         void stop();
 

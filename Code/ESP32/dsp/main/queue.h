@@ -8,7 +8,7 @@
 #include "freertos/queue.h"
 #include "freertos/task.h"
 
-#define MESSAGE_QUEUE_SIZE 15
+#define MESSAGE_QUEUE_SIZE 50
 
 class Queue {
 public:

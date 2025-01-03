@@ -12,7 +12,7 @@ typedef std::vector<I2C_Listener *> Listeners;
 
 class I2CBUS {
 public:
-    I2CBUS( uint8_t slaveAddr, Queue queue  );
+    I2CBUS( uint8_t slaveAddr, Queue &queue  );
 
     bool writeBytes( uint8_t *data, uint32_t bytesToWrite );
     void handleReceiveData( const i2c_slave_rx_done_event_data_t *data );

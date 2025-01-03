@@ -20,11 +20,13 @@ public:
         MSG_AUDIO_FULL_RESET
     };
 
-    Message( MessageType t ) : mMessageType( t ), mParam( 0 ) {}
-    Message( MessageType t, uint32_t param ) : mMessageType( t ), mParam( param ) {}
+    Message( MessageType t ) : mMessageType( t ), mParam( 0 ), mParam2( 0 ) {}
+    Message( MessageType t, uint32_t param ) : mMessageType( t ), mParam( param ), mParam2( 0 ) {}
+    Message( MessageType t, uint32_t param, uint32_t param2 ) : mMessageType( t ), mParam( param ), mParam2( param2 ) {}
 
     MessageType mMessageType;
     uint32_t mParam;
+    uint32_t mParam2;
 };
 
 #endif

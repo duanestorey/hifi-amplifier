@@ -16,7 +16,7 @@ static bool i2c_slave_receive_cb(i2c_slave_dev_handle_t channel, const i2c_slave
     return false;
 }
 
-I2CBUS::I2CBUS( uint8_t slaveAddr, Queue queue ) : mQueue( queue ), mSlaveAddr( slaveAddr ), mBusHandle( 0 ) {  
+I2CBUS::I2CBUS( uint8_t slaveAddr, Queue &queue ) : mQueue( queue ), mSlaveAddr( slaveAddr ), mBusHandle( 0 ) {  
     AMP_DEBUG_I( "Starting I2C bus on addr %x", slaveAddr );
     i2c_slave_config_t conf = {};
 

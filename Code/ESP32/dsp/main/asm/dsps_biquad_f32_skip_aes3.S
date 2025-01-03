@@ -68,7 +68,7 @@ dsps_biquad_f32_skip_aes3:
 	lsi     f9, a2, 0        // f9 = x[i]
 	loopnez a4, .loop_bq_end_m_aes3
 		madd.s  f9, f7, f5   // f9 += -a1*w0
-		addi    a3, a3, 4    // out++;
+		addi    a3, a3, 8    // out++;
 		mul.s   f10, f1, f7  // f10 = b1*w0
 		madd.s  f9, f8, f6   // f9 += -a2*w1
 		madd.s  f10, f9, f0  // f10 += b0*d0
