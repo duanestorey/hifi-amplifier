@@ -13,6 +13,7 @@ idf_component_register(SRCS
     "i2s.cpp" 
     "circ-buffer.cpp" 
     "profile.cpp"
+    "asm/dsps_biquad_f32_skip_dft2_aes3.S"
     "asm/dsps_biquad_f32_skip_aes3.S"
     "asm/dsps_to_float.S"
     

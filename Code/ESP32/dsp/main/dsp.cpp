@@ -2,6 +2,7 @@
 #include "debug.h"
 #include "timer.h"
 #include <memory.h>
+#include "dsps_tone_gen.h"
 
 DSP::DSP() : mSamplingRate( 48000 ), mSamplesPerPayload( 0 ), mBytesPerPayload( 0 ), mBitDepth( 32 ), mSlotDepth( 32 ), 
     mMode( MODE_BYPASS ), mI2C( 0 ), mI2S( 0 ), mTimer( 0 ), mProfile( 0 ), mAudioStarted( false ), mTimerID( 0 ), mCpuUsage( 0 ) {
@@ -161,11 +162,17 @@ DSP::handleAudioThread() {
     mPipeline = new Pipeline( mProfile );
 
     mSamplingRate = 48000;
-    uint32_t packetSamples = mSamplingRate/100;
-    int32_t *buffer = (int32_t *)aligned_alloc( 2 * sizeof( int32_t ), 2 * sizeof( int32_t ) * packetSamples );
+    uint32_t packets = 40;
+    uint32_t packetSamples = mSamplingRate/packets;
+    float *tone = (float*)malloc( packetSamples * sizeof( float ) );
     for ( int i = 0 ; i < packetSamples; i++ ) {
-        buffer[i*2] = 1000 + ( rand() % 100 ) - 49;
-        buffer[i*2+1] =  buffer[i*2];
+        tone[ i ] = 1000.0f * ( sin ( 2 * M_PI * 50 * i / mSamplingRate ) +  sin ( 2 * M_PI * 5000 * i / mSamplingRate ) );
+    }
+
+    int32_t *buffer = (int32_t *)aligned_alloc( sizeof( int32_t ), 2 * sizeof( int32_t ) * packetSamples );
+    for ( int i = 0 ; i < packetSamples; i++ ) {
+        buffer[i*2] = (float)tone[ i ];
+        buffer[i*2+1] = (float)tone[ i ];
     }
 
     AMP_DEBUG_I( "Setting up timer" );
@@ -173,8 +180,10 @@ DSP::handleAudioThread() {
 
     AMP_DEBUG_I( "Adding Biquad filters" );
 
-    mPipeline->addBiquad( Pipeline::CHANNEL_LEFT, new Biquad( Biquad::LOWPASS, 60, 0.70711 ) );
-    mPipeline->addBiquad( Pipeline::CHANNEL_RIGHT, new Biquad( Biquad::HIGHPASS, 60, 0.70711 ) );
+    mPipeline->addBiquad( Pipeline::CHANNEL_LEFT, new Biquad( Biquad::LOWPASS, 1400, 0.707 ) );
+    mPipeline->addBiquad( Pipeline::CHANNEL_LEFT, new Biquad( Biquad::LOWPASS, 1400, 0.707  ) );
+    mPipeline->addBiquad( Pipeline::CHANNEL_RIGHT, new Biquad( Biquad::HIGHPASS, 1400, 0.707  ) );
+    mPipeline->addBiquad( Pipeline::CHANNEL_RIGHT, new Biquad( Biquad::HIGHPASS, 1400, 0.707  ) );
 
     mPipeline->setSource( Pipeline::CHANNEL_LEFT, Pipeline::SOURCE_LEFT );
     mPipeline->setSource( Pipeline::CHANNEL_RIGHT, Pipeline::SOURCE_RIGHT );
@@ -260,13 +269,14 @@ DSP::handleAudioThread() {
                     break;
                 case Message::MSG_TIMER:   
                 {
-                    
                     AMP_DEBUG_I( "Timer message received" );
                     mProfile->reset();
+                
 
                     int32_t *outBuf = 0;
-                    for ( int i = 0; i < 100; i++ ) {
-                        outBuf = mPipeline->process( (int32_t *)buffer, packetSamples );
+                    for ( int i = 0; i < packets; i++ ) {
+                        mPipeline->resetDelayLines();
+                        outBuf = mPipeline->process( buffer, packetSamples );
                     }
 
                     {
@@ -279,9 +289,11 @@ DSP::handleAudioThread() {
 
                     {
                         std::stringstream s;
+                        s.precision( 3 );
+                        s.setf(std::ios::fixed);
                         
                         for ( int i = 0 ; i < packetSamples; i++ ) {
-                            s << outBuf[ 2*i ] << " ";
+                            s << outBuf[ 2*i ] << ",";
                         }
 
                         AMP_DEBUG_I( "Filtered woofer data - %s\n\n", s.str().c_str() );
@@ -289,7 +301,7 @@ DSP::handleAudioThread() {
                         s.str( "" );
                         
                         for ( int i = 0 ; i < packetSamples; i++ ) {
-                            s << outBuf[ 2*i + 1] << " ";
+                            s << outBuf[ 2*i + 1] << ",";
                         }
 
                         AMP_DEBUG_I( "Filtered tweeter data - %s\n\n", s.str().c_str() );

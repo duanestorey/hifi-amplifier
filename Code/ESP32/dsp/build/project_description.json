@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "main",
-    "project_version":    "7955c39d-dirty",
+    "project_version":    "1beb9c55-dirty",
     "project_path":       "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp",
     "idf_path":           "/Users/duane/Code/Github/esp-idf",
     "build_dir":          "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build",
@@ -1210,7 +1210,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__esp-dsp" ],
             "file": "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/build/esp-idf/main/libmain.a",
-            "sources": [ "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/main.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/queue.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/mutex.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/debug.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/timer.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/dsp.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/i2c-bus.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/pipeline.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/biquad.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/i2s.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/circ-buffer.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/profile.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/asm/dsps_biquad_f32_skip_aes3.S", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/asm/dsps_to_float.S" ],
+            "sources": [ "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/main.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/queue.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/mutex.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/debug.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/timer.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/dsp.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/i2c-bus.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/pipeline.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/biquad.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/i2s.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/circ-buffer.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/profile.cpp", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/asm/dsps_biquad_f32_skip_dft2_aes3.S", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/asm/dsps_biquad_f32_skip_aes3.S", "/Users/duane/Code/personal/projects/hifi-amplifier/Code/ESP32/dsp/main/asm/dsps_to_float.S" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {

@@ -60,6 +60,7 @@ class Pipeline {
 
         void generate( uint32_t samplingRate );
         uint8_t getBiquadCount() const { return mChannels[ CHANNEL_LEFT ].mBiquads.size() + mChannels[ CHANNEL_RIGHT ].mBiquads.size(); }
+        inline void dsps_biquad_f32_skip_transposed2( const float *input, float *output, uint32_t samples, float *coeff, float *delay );
     protected:
         ChannelInfo mChannels[2];
 

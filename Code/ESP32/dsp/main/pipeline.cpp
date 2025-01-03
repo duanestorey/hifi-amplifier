@@ -290,12 +290,32 @@ Pipeline::process( float *data, uint32_t samples ) {
 }
 
 void 
+Pipeline::dsps_biquad_f32_skip_transposed2( const float *input, float *output, uint32_t samples, float *coeff, float *delay ) {
+    for ( unsigned int i = 0; i < samples; i++ ) {
+        float in = input[2*i];
+      //  float out = output[2*i];
+        float out = delay[0]+coeff[0]*in;
+        delay[0] = delay[1]+coeff[1]*in-coeff[3]*out;
+        delay[1] = coeff[2]*in-coeff[4]*out;
+        output[2*i] = out;
+    }
+}
+/*
+// f0 - b0
+// f1 - b1
+// f2 - b2
+// f3 - a1
+// f4 - a2
+*/
+
+void 
 Pipeline::processInternal( uint32_t samples ) {
     for( Biquads::iterator i = mChannels[ CHANNEL_LEFT ].mBiquads.begin(); i != mChannels[ CHANNEL_LEFT ].mBiquads.end(); i++ ) {
        // dsps_biquad_f32_aes3( mInputLeft, mOutputLeft, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
         mProfile->startProfiling( "biquadleft" );
 
-        dsps_biquad_f32_skip_aes3( mOutputFloat, mOutputFloat, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        dsps_biquad_f32_skip_dft2_aes3( mOutputFloat, mOutputFloat, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+       // dsps_biquad_f32_skip_aes3( mOutputFloat, mOutputFloat, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
       
         mProfile->stopProfiling( "biquadleft" );
     }
@@ -303,7 +323,8 @@ Pipeline::processInternal( uint32_t samples ) {
     for( Biquads::iterator i = mChannels[ CHANNEL_RIGHT ].mBiquads.begin(); i != mChannels[ CHANNEL_RIGHT ].mBiquads.end(); i++ ) {
         mProfile->startProfiling( "biquadright" );
        // dsps_biquad_f32_aes3( mInputRight, mOutputRight, samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
-        dsps_biquad_f32_skip_aes3( &mOutputFloat[1], &mOutputFloat[1], samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        dsps_biquad_f32_skip_dft2_aes3( &mOutputFloat[1], &mOutputFloat[1], samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
+        //dsps_biquad_f32_skip_aes3( &mOutputFloat[1], &mOutputFloat[1], samples, (*i)->getCoefficients(), (*i)->getDelayLine() );
 
         mProfile->stopProfiling( "biquadright" );
     }
